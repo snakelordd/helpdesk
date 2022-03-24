@@ -1,0 +1,20 @@
+@import "~antd/dist/antd.css";
+
+.menu {
+  border-bottom: solid 1px #f5e2e2;
+  padding: 0px 19px;
+  box-shadow: 1 0 28px #dbd6d6;
+  background-color: #fff;
+  width: 100vw;
+ display: flex;
+ justify-content:center;
+}
+
+.left-menu {
+    width: 50%;
+}
+
+.right-menu {
+    
+   margin-left: auto;
+}
