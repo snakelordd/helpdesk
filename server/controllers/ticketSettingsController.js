@@ -1,6 +1,7 @@
 const {Ticket, Category, Status, Priority} = require('../models/models')
 const ApiError = require('../error/ApiError')
 
+
 class TicketSettingsController {
     async create(req, res, next) {
         try {
