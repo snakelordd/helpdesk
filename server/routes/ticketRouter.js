@@ -6,7 +6,7 @@ const checkRole = require('../middleware/checkRoleMiddleWare')
 router.post('/create', ticketController.create)
 router.post('/', checkRole('ADMIN'), ticketController.updateTicket)
 router.post('/:id', checkRole('ADMIN'), ticketController.updateTicket)
-router.get('/', checkRole('ADMIN'), ticketController.getAll)
+router.get('/all', checkRole('ADMIN'), ticketController.getAll)
 router.get('/:id', ticketController.getOne)
 
 

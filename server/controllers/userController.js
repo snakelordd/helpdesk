@@ -25,11 +25,33 @@ class UserController {
         const hashPassword = await bcrypt.hash(password, 5)
 
         const user = await User.create( {email, role, password: hashPassword})
-
+        const cuurent = await Current.create( {userId: user.id})
+        
         const token = generateJwt(user.id, user.email, user.role)
 
         return res.json({token})
     }
+
+    async setInfo(req, res, next) {
+        try {
+            const {name, address, organization, department, userId} = req.body
+
+            const userInfo = await UserInfo.create(
+                {
+                    name, 
+                    address,  
+                    organization,  
+                    department,
+                    userId: userId
+                }) 
+
+          return res.json(userInfo)
+         }
+         catch (e) {
+             next(ApiError.internal(e.message))
+         }     
+    }
+
     async login(req, res, next) {
         const {email, password} = req.body
         const user = await User.findOne( {where: {email}} )

@@ -1,4 +1,4 @@
-const {Ticket, Category, Status, Priority, Chat, Message, Attachment, Current} = require('../models/models')
+const {Ticket, Category, Status, Priority, Chat, Message, Attachment, Current, CurrentTicket} = require('../models/models')
 const ApiError = require('../error/ApiError')
 const uuid = require('uuid')
 const path = require('path')
@@ -20,16 +20,22 @@ class TicketController {
             let priorityId = priority || 1
             
             const chat = await Chat.create()
+            const current = await Current.findOne( {where: {userId}})
 
             const ticket = await Ticket.create(
                 {
                     title, 
-                    userId, 
                     categoryId,  
                     priorityId,  
                     statusId,
                     chatId: chat.id
                 }) 
+            
+            await CurrentTicket.create( {
+                ticketId: ticket.id,
+                currentId: current.id,
+                role: 'AUTHOR'
+            })
             
             if (attachment) {
                 attachment.mv(path.resolve(__dirname, '..', 'static', fileName))
@@ -57,7 +63,7 @@ class TicketController {
                     attachmentId: attachment.id
                 }
             ) 
-          return res.json(ticket)
+          return res.json(current)
          }
          catch (e) {
              next(ApiError.internal(e.message))
@@ -93,16 +99,51 @@ class TicketController {
         return res.json(tickets)
     }
 
+    async getMy(req, res) {
+        let {option, limit, page} = req.query
+        let tickets
+        page = page || 1
+        limit = limit || 10
+        let offset = page * limit - limit
+        
+
+        if (option === 'open') {
+            tickets = await Ticket.findAndCountAll(
+                {
+                    where: {
+                        statusId: { [Op.ne]: 2 } // проверка на закрытую заявку
+                    }, 
+                    limit, 
+                    offset
+                })
+        } 
+        if (option === 'closed') {
+            tickets = await Ticket.findAndCountAll(
+                {
+                    where: { statusId: 2 } ,
+                    limit, 
+                    offset
+                })
+        }
+        return res.json(tickets)
+    }
+
     async getOne(req, res) {
         const {id} = req.params
 
         const ticket = await Ticket.findOne(
             {
-                where: {id},
-                include: [ {model: Category}, {model: Status}, {model: Priority}]
+                where: {id },
+                attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId'],
+                include: [ {model: Category, attributes: ['name']}, {model: Status, attributes: ['name']}, {model: Priority, attributes: ['name']}]
 
             }
         )
+            
+        ticket.dataValues.category = ticket.category.name            
+        ticket.dataValues.priority = ticket.priority.name           
+        ticket.dataValues.status = ticket.status.name
+
         return res.json({ticket})
     }
 
@@ -144,7 +185,9 @@ class TicketController {
             }
 
             if (userId) {
-                await Current.create( { userId, ticketId })
+                const current = await Current.findOne({where: {userId}})
+                
+                await CurrentTicket.create( { currentId: current.id, ticketId, role: 'HOLDER' })
                 await Message.create( {
                     body: 'Назначен исполнитель',
                     chatId,

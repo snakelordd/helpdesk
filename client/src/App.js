@@ -1,28 +1,16 @@
-
-import React, { useState } from 'react'
-import './App.css';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import AppRouter from './components/AppRouter';
 import NavBar from './components/NavBar';
-import { Empty } from 'antd';
 
-
-
-export default class App extends React.Component {
-  render() {
-    return (
-      <>
+const App = () => {
+  return (
+    <BrowserRouter>
         <NavBar />
-        <div className='emptyPage' style={ { width: '100vw', height: '100hw', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <Empty />
-        </div>
-      </>
-    );
-  }
+        <AppRouter />        
+    </BrowserRouter>
+  );
 }
 
-
-
-
-
-
-
-
+export default App;

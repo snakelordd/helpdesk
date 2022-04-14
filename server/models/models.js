@@ -20,9 +20,10 @@ const Current = sequelize.define('current', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
-// const CurrentTicket = sequelize.define('current_ticket', {
-//     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-// })
+ const CurrentTicket = sequelize.define('current_ticket', {
+     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+     role: {type: DataTypes.STRING, allowNull: false}
+ })
 
 const Ticket = sequelize.define('ticket', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -67,26 +68,26 @@ const Attachment = sequelize.define('attachment', {
 User.hasOne(UserInfo)
 UserInfo.belongsTo(User)
 
-// User.hasOne(Current)
-// Current.belongsTo(User)
+User.hasOne(Current)
+ Current.belongsTo(User)
 
-// Current.hasMany(CurrentTicket)
-// CurrentTicket.belongsTo(Current)
+Current.hasMany(CurrentTicket)
+ CurrentTicket.belongsTo(Current)
 
 User.hasMany(Message)
 Message.belongsTo(User)
 
-User.hasMany(Ticket, {as: 'author'})
-Ticket.belongsTo(User)
+//User.hasMany(Ticket, {as: 'author'})
+//Ticket.belongsTo(User)
 
-User.belongsToMany(Ticket, {through: Current})
-Ticket.belongsToMany(User, {through: Current})
+Current.belongsToMany(Ticket, {through: CurrentTicket})
+Ticket.belongsToMany(Current, {through: CurrentTicket})
 
 Chat.hasOne(Ticket)
 Ticket.belongsTo(Chat)
 
-// Ticket.hasMany(CurrentTicket)
-// CurrentTicket.belongsTo(Ticket)
+Ticket.hasMany(CurrentTicket)
+CurrentTicket.belongsTo(Ticket)
 
 Chat.hasMany(Message)
 Message.belongsTo(Chat)
@@ -107,7 +108,7 @@ module.exports = {
     User,
     UserInfo,
     Current,
-    //CurrentTicket,
+    CurrentTicket,
     Ticket,
     Chat,
     Category,

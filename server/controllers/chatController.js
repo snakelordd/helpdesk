@@ -5,7 +5,7 @@ const path = require('path')
 
 class chatController {
     async newMsg(req, res, next) {
-        //try {
+        try {
             const {body, userId, chatId} = req.body
             let attachment
             let fileName
@@ -36,10 +36,10 @@ class chatController {
                 }
             ) 
           return res.json(message)
-         //}
-         //catch (e) {
-         //    next(ApiError.internal(e.message))
-         //}     
+         }
+         catch (e) {
+             next(ApiError.internal(e.message))
+         }     
     }
     async getMsg(req, res) {
         const {id} = req.params

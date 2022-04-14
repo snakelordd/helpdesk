@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import TicketStore from './store/TicketStore';
+import App from './App'
+import UserStore from './store/UserStore';
+import TicketPropsStore from './store/TicketPropsStore';
+import MessageStore from './store/MessageStore';
 
+export const Context = createContext(null)
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <Context.Provider value={
+      {
+        user: new UserStore(),
+        tickets: new TicketStore(),
+        ticketProps: new TicketPropsStore(),
+        message: new MessageStore()
+      }
+    }>
+      <App />
+    </Context.Provider>,
   document.getElementById('root')
 );
 
