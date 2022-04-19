@@ -10,8 +10,8 @@ export default class MessageStore {
         makeAutoObservable(this)
     }
 
-    setTickets(messages) {
-        this._categories = messages
+    setMessages(messages) {
+        this._messages = messages
     }
     get messages() {
         return this._messages

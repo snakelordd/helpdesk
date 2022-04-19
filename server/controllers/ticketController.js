@@ -135,14 +135,14 @@ class TicketController {
             {
                 where: {id },
                 attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId'],
-                include: [ {model: Category, attributes: ['name']}, {model: Status, attributes: ['name']}, {model: Priority, attributes: ['name']}]
+                include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name']}, {model: Priority, attributes: ['id', 'name' ]}]
 
             }
         )
             
-        ticket.dataValues.category = ticket.category.name            
-        ticket.dataValues.priority = ticket.priority.name           
-        ticket.dataValues.status = ticket.status.name
+        // ticket.dataValues.category = ticket.category.name            
+        // ticket.dataValues.priority = ticket.priority.name           
+        // ticket.dataValues.status = ticket.status.name
 
         return res.json({ticket})
     }

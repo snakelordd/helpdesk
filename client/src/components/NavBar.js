@@ -37,7 +37,7 @@ const NavBar = observer ( () => {
         >
             <div className="Navbar">
                     {user.isAuth ? 
-                        <Menu mode='horizontal' style={{height: 'inherit', paddingTop: '20px'}} >
+                        <Menu mode='horizontal' style={{height: 'inherit', paddingTop: '10px', paddingBottom: '5px'}} >
                             <Menu.Item key="home" icon={<HomeOutlined/>} onClick={()=> navigate(HOME_ROUTE)} >
                                 Главная
                             </Menu.Item>
@@ -55,7 +55,7 @@ const NavBar = observer ( () => {
                             </Menu.Item>
                         </Menu>
                         :
-                        <Menu mode='horizontal'  >
+                        <Menu mode='horizontal'  style={{height: 'inherit', paddingTop: '10px', paddingBottom: '5px'}}>
                             <Menu.Item key="instructions" icon={<FileSearchOutlined />} onClick={()=> navigate(MANUAL_ROUTE)} >
                                 Инструкции
                             </Menu.Item>

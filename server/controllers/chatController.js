@@ -49,8 +49,10 @@ class chatController {
         const messages = await Message.findAll( 
             {
                 where: {chatId: chatId},
-                include: [ { model: Attachment } ]
+                include: [ { model: Attachment }]
             })
+
+
         // const user = await User.findOne( 
         //     {
         //         where: {id: userId} ,

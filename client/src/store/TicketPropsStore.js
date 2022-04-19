@@ -8,16 +8,16 @@ export default class TicketPropsStore {
             {id: 3, name: 'Other'}
         ]
         this._statuses = [
-            {id: 1, name: 'OPEN'},
-            {id: 2, name: 'PROCESSING'},
-            {id: 3, name: 'CLOSED'},
-            {id: 4, name: 'PENDING'},
+            {id: 1, name: 'ОТКРЫТ', tag: 'purple'},
+            {id: 2, name: 'В РАБОТЕ', tag: 'processing'},
+            {id: 3, name: 'ЗАКРЫТ', tag: 'success'}, 
+            {id: 4, name: 'ОТЛОЖЕНО', tag: 'default'},
         ]
 
         this._priorities = [
-            {id: 1, name: 'LOW'},
-            {id: 2, name: 'NORMAL'},
-            {id: 3, name: 'HIGH'}
+            {id: 1, name: 'НИЗКИЙ'},
+            {id: 2, name: 'СРЕДНИЙ'},
+            {id: 3, name: 'ВЫСОКИЙ'}
         ]
         makeAutoObservable(this)
     }
