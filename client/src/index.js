@@ -5,7 +5,7 @@ import App from './App'
 import UserStore from './store/UserStore';
 import TicketPropsStore from './store/TicketPropsStore';
 import MessageStore from './store/MessageStore';
-
+import './styles/styles.css'
 export const Context = createContext(null)
 
 ReactDOM.render(

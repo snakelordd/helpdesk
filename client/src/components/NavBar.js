@@ -27,13 +27,6 @@ const NavBar = observer ( () => {
     return (
         <nav
             className="menu"
-            style={
-                { 
-                    position: "static", 
-                    zIndex: 5, 
-                    width: "100%",
-                 }
-                }
         >
             <div className="Navbar">
                     {user.isAuth ? 

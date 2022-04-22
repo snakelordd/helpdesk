@@ -50,7 +50,78 @@ const TicketPage = () => {
         chatId: 1,
         attachmentId: null,
         attachment: null
-      }
+      },
+      {
+        id: 3,
+        body: 'Нужен картридж для принтера  HP LaserJet P1102'
+        ,
+        isLog: false,
+        createdAt: "2022-03-31T15:41:01.021Z",
+        updatedAt: "2022-04-20T15:41:01.021Z",
+        userId: 1,
+        chatId: 1,
+        attachmentId: null,
+        attachment: null
+      },
+      {
+        id: 4,
+        body: 'Уважаемые коллеги, в данный момент наблюдаются проблемы с подтверждением перемещений в МДЛП. Проблема находится в процессе решения. Просим проявить терпения. Прошу отправить мне письмо с проблемными перемещениями в формате: Получатель / Дата перемещения / Номер Документа / Отправитель'
+        ,
+        isLog: false,
+        createdAt: "2022-03-31T02:41:01.021Z",
+        updatedAt: "2022-03-31T02:41:01.021Z",
+        userId: 1,
+        chatId: 1,
+        attachmentId: null,
+        attachment: null
+      },
+      {
+        id: 5,
+        body: 'Нужен картридж для принтера  HP LaserJet P1102'
+        ,
+        isLog: false,
+        createdAt: "2022-03-31T15:41:01.021Z",
+        updatedAt: "2022-04-20T15:41:01.021Z",
+        userId: 1,
+        chatId: 1,
+        attachmentId: null,
+        attachment: null
+      },
+      {
+        id: 6,
+        body: 'Нужен картридж для принтера  HP LaserJet P1102'
+        ,
+        isLog: false,
+        createdAt: "2022-03-31T15:41:01.021Z",
+        updatedAt: "2022-04-20T15:41:01.021Z",
+        userId: 1,
+        chatId: 1,
+        attachmentId: null,
+        attachment: null
+      },
+      {
+        id: 7,
+        body: 'Нужен картридж для принтера  HP LaserJet P1102'
+        ,
+        isLog: false,
+        createdAt: "2022-03-31T15:41:01.021Z",
+        updatedAt: "2022-04-20T15:41:01.021Z",
+        userId: 1,
+        chatId: 1,
+        attachmentId: null,
+        attachment: null
+      },
+      {
+        id: 8,
+        body: "Заявка закрыта",
+        isLog: true,
+        createdAt: "2022-03-31T02:41:01.016Z",
+        updatedAt: "2022-03-31T02:41:01.016Z",
+        userId: null,
+        chatId: 1,
+        attachmentId: null,
+        attachment: null
+      },
     ]
 
     const author = {
@@ -69,7 +140,7 @@ const TicketPage = () => {
 
     return (
         <div className="pageprops" >
-            <div  style={{width: '70vw', height: '100vh', marginTop: '1%'}}>
+            <div className='header' style={{width: '70vw', marginTop: '1%', height: '12%'}}>
                 <PageHeader
                   ghost={false}
                   onBack={() => window.history.back()}
@@ -83,6 +154,7 @@ const TicketPage = () => {
                     </Button>,
                   ]}
                 >
+              
                   <Descriptions size="small" column={3}>
                     <Descriptions.Item label="Создан"><a>{getFormatDate(ticket)}</a></Descriptions.Item>
                     <Descriptions.Item label="Категория">
@@ -91,12 +163,20 @@ const TicketPage = () => {
                     <Descriptions.Item label="Автор"><a>{author.user_info.name}</a></Descriptions.Item>
                   </Descriptions>
                 </PageHeader>
-                <div style={{width: '70vw', marginTop: '1%', backgroundColor: 'white'}}>
-                  <Chat messages={messages} author={author}/>
-                </div>
-          </div>
-          
-          
+            </div>
+              <div className='content' style={{display: 'flex', width: '70vw', height:'85%'}}>
+                  <div style={{width: '75%', marginTop: '1%', backgroundColor: 'white'}}>
+                  <div>
+                      <h3 style={{paddingTop: '1%', paddingLeft: '2%'}}>Активность</h3>
+                      
+                      <Divider style={{marginTop: '-5px'}}/>
+                    </div>
+                    <Chat messages={messages} author={author}/>
+                  </div >
+                  <div style={{width: '25%', height: '400px', marginTop: '1%', marginLeft: '1%', backgroundColor: 'white'}}>
+
+                  </div>
+              </div>  
         </div>
     );
 };
