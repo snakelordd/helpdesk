@@ -14,7 +14,7 @@ ReactDOM.render(
         user: new UserStore(),
         tickets: new TicketStore(),
         ticketProps: new TicketPropsStore(),
-        message: new MessageStore()
+        messages: new MessageStore()
       }
     }>
       <App />

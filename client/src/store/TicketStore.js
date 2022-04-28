@@ -15,10 +15,7 @@ export default class TicketStore {
                     id: '1',
                     name: "ОТКРЫТ",
                 },
-                priority: {
-                    id: '2',
-                    name: "СРЕДНИЙ",
-                },
+                isPriority: true,
             },
             {
                 id: 2, 
@@ -32,10 +29,7 @@ export default class TicketStore {
                     id: '2',
                     name: "В РАБОТЕ",
                 },
-                priority: {
-                    id: '3',
-                    name: "ВЫСОКИЙ",
-                },
+                isPriority: false,
             },
             {
                 id: 3, 
@@ -49,21 +43,28 @@ export default class TicketStore {
                     id: '1',
                     name: "ОТКРЫТ",
                 },
-                priority: {
-                    id: '1',
-                    name: "НИЗКИЙ",
-                },
+                isPriority: false,
             },
         ]
+        this._selectedTicket = null
         makeAutoObservable(this)
     }
 
     setTickets(ticket) {
         this._categories = ticket
     }
+
+    setSelectedTicket(ticket) {
+        this._selectedTicket = ticket
+    }
     get tickets() {
         return this._tickets
     }
+
+    get selectedTicket() {
+        return this._selectedTicket
+    }
+
 
 
 

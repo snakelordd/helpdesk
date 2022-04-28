@@ -100,7 +100,7 @@ class TicketController {
     }
 
     async getMy(req, res) {
-        let {option, limit, page} = req.query
+        let {option, limit, page, userId} = req.query
         let tickets
         page = page || 1
         limit = limit || 10
@@ -111,6 +111,7 @@ class TicketController {
             tickets = await Ticket.findAndCountAll(
                 {
                     where: {
+                        userId,
                         statusId: { [Op.ne]: 2 } // проверка на закрытую заявку
                     }, 
                     limit, 
@@ -120,7 +121,9 @@ class TicketController {
         if (option === 'closed') {
             tickets = await Ticket.findAndCountAll(
                 {
+
                     where: { statusId: 2 } ,
+                    userId,
                     limit, 
                     offset
                 })
@@ -149,7 +152,7 @@ class TicketController {
 
     async updateTicket(req, res) {
         const {id} = req.params
-        let {ticketId, statusId, priorityId, categoryId, userId} = req.body
+        let {ticketId, statusId, isPriority, categoryId, userId} = req.body
         
         ticketId = id || ticketId
         const ticket = await Ticket.findOne( {
@@ -167,8 +170,8 @@ class TicketController {
                     chatId,
                 })
             }
-            if (priorityId) { 
-                await Ticket.update( { priorityId }, { where: {id: ticketId} } )
+            if (isPriority) { 
+                await Ticket.update( { isPriority }, { where: {id: ticketId} } )
                 await Message.create( {
                     body: 'Приоритет заявки изменен',
                     isLog: true,

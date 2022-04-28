@@ -1,6 +1,7 @@
 export const CURRENT_ROUTE = '/current'
 export const HOME_ROUTE = '/home'
 export const CREATE_ROUTE = '/create'
+export const PROFILE_ROUTE = '/profile'
 export const SETTINGS_ROUTE = '/settings'
 export const TICKETS_ROUTE = '/tickets'
 export const CLOSED_ROUTE = '/tickets/closed'

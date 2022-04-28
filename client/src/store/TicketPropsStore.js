@@ -13,12 +13,6 @@ export default class TicketPropsStore {
             {id: 3, name: 'ЗАКРЫТ', tag: 'success'}, 
             {id: 4, name: 'ОТЛОЖЕНО', tag: 'default'},
         ]
-
-        this._priorities = [
-            {id: 1, name: 'НИЗКИЙ'},
-            {id: 2, name: 'СРЕДНИЙ'},
-            {id: 3, name: 'ВЫСОКИЙ'}
-        ]
         makeAutoObservable(this)
     }
 

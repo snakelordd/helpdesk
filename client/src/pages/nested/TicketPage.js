@@ -3,16 +3,20 @@ import { PageHeader, Button, Descriptions, Tag, Divider } from 'antd';
 import { Context } from '../..';
 import { getFormatDate, getStatusTag,  } from '../CommonFunctions';
 import Chat from '../../components/Chat';
+import { observer } from 'mobx-react-lite';
 
 
 
 const TicketPage = () => {
+    const {messages} = useContext(Context)
+
     const {tickets, ticketProps} = useContext(Context)
 
     const ticket = {
         id: 1, 
         title: 'ОБНОВИТЕ ПРОГРАММЫ ВОРД И ЭХЕЛЬ ', 
         createdAt: '2022-03-31 09:41:01+07', 
+        userId: 1,        
         category: {
             id: '1',
             name: "ДРУГОЕ",
@@ -27,7 +31,7 @@ const TicketPage = () => {
         },
     }
 
-    const messages = [
+    const fetchedMessages = [
       {
         id: 1,
         body: "Заявка создана",
@@ -137,10 +141,11 @@ const TicketPage = () => {
       }
     }
 
+    messages.setMessages(fetchedMessages)
 
     return (
         <div className="pageprops" >
-            <div className='header' style={{width: '70vw', marginTop: '1%', height: '12%'}}>
+            <div className='header pageWidth' style={{marginTop: '1%', height: '12%'}}>
                 <PageHeader
                   ghost={false}
                   onBack={() => window.history.back()}
@@ -164,14 +169,14 @@ const TicketPage = () => {
                   </Descriptions>
                 </PageHeader>
             </div>
-              <div className='content' style={{display: 'flex', width: '70vw', height:'85%'}}>
+              <div className='content pageWidth'  style={{display: 'flex', height:'85%'}}>
                   <div style={{width: '75%', marginTop: '1%', backgroundColor: 'white'}}>
                   <div>
                       <h3 style={{paddingTop: '1%', paddingLeft: '2%'}}>Активность</h3>
                       
                       <Divider style={{marginTop: '-5px'}}/>
                     </div>
-                    <Chat messages={messages} author={author}/>
+                    <Chat author={author}/>
                   </div >
                   <div style={{width: '25%', height: '400px', marginTop: '1%', marginLeft: '1%', backgroundColor: 'white'}}>
 

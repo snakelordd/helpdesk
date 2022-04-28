@@ -28,6 +28,8 @@ const Current = sequelize.define('current', {
 const Ticket = sequelize.define('ticket', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     title: {type: DataTypes.STRING, allowNull: false},
+    userId: {type: DataTypes.INTEGER},
+    isPriority: {type: DataTypes.BOOLEAN, defaultValue: false}
 })
 
 const Chat = sequelize.define('chat', {
@@ -35,11 +37,6 @@ const Chat = sequelize.define('chat', {
 })
 
 const Category = sequelize.define('category', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    name: {type: DataTypes.STRING, allowNull: false}
-})
-
-const Priority = sequelize.define('priority', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, allowNull: false}
 })
@@ -98,9 +95,6 @@ Message.belongsTo(Attachment)
 Category.hasMany(Ticket)
 Ticket.belongsTo(Category)
 
-Priority.hasMany(Ticket)
-Ticket.belongsTo(Priority)
-
 Status.hasMany(Ticket)
 Ticket.belongsTo(Status)
 
@@ -112,7 +106,6 @@ module.exports = {
     Ticket,
     Chat,
     Category,
-    Priority,
     Status,
     Message,
     Attachment

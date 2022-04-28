@@ -6,7 +6,7 @@ import { HeaderSearch } from "./HeaderSearch";
 import {HomeOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined} from '@ant-design/icons'
 import {observer} from 'mobx-react-lite'
 import { useNavigate, Link, } from 'react-router-dom';
-import { CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE } from '../utils/consts';
+import { CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE } from '../utils/consts';
 
 const NavBar = observer ( () => {
     
@@ -79,8 +79,11 @@ const NavBar = observer ( () => {
                         </Menu.Item>
                     </Menu.ItemGroup>
                     <Menu.ItemGroup title='Настройки' >
-                        <Menu.Item key='profile' icon={<SettingOutlined />} onClick={drawerClosed}>
-                            <Link to={SETTINGS_ROUTE}>Мой профиль</Link> 
+                        <Menu.Item key='profile' icon={<UserOutlined/>} onClick={drawerClosed}>
+                            <Link to={PROFILE_ROUTE}>Мой профиль</Link> 
+                        </Menu.Item>
+                        <Menu.Item key='settings' icon={<SettingOutlined />} onClick={drawerClosed}>
+                            <Link to={SETTINGS_ROUTE}>Настройки</Link> 
                         </Menu.Item>
                     </Menu.ItemGroup>
                 </Menu>

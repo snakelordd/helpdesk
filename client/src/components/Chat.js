@@ -1,16 +1,17 @@
 import { Comment, Tooltip, List, Avatar, Divider, Form, Button, BackTop } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { getFormatDate } from '../pages/CommonFunctions';
 import TextArea from 'antd/lib/input/TextArea';
+import { Context } from '..';
+import { observer } from 'mobx-react-lite';
 
-const Chat = ({messages, author}) => {
-
+const Chat = observer (({author}) => {
+    const {messages} = useContext(Context)
     const [value, setValue] = useState([]);
-
     const handleChange = (e) => {
-        setValue(e.target.value)
+        setValue([e.target.value])
     }
 
     const handleSubmit = e => {
@@ -42,7 +43,7 @@ const Chat = ({messages, author}) => {
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit"  onClick={onSubmit} type="primary">
-              Add Comment
+              Отправить
             </Button>
           </Form.Item>
         </>
@@ -55,7 +56,7 @@ const Chat = ({messages, author}) => {
                   className="comment-list"
 
                   itemLayout="horizontal"
-                  dataSource={messages}
+                  dataSource={messages.messages}
                   renderItem={item => getMessage(item)}
                 />
 
@@ -76,6 +77,6 @@ const Chat = ({messages, author}) => {
             
         </div>
     );
-};
+});
 
 export default Chat;

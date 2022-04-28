@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import '../styles/styles.css'
-import { Table, Tag, Space, PageHeader, Divider } from 'antd';
+import { Table, Tag, Space, PageHeader, Divider, Input, DatePicker } from 'antd';
 import { Context } from '..';
 import { useNavigate } from 'react-router-dom';
 import {HOME_ROUTE, TICKETS_ROUTE } from '../utils/consts';
 import { observer } from 'mobx-react-lite';
 import { getFormatDate, getStatusTag, getPriorityIcon } from './CommonFunctions';
-
-
+import {locale} from '../utils/locale'
+import SetCurrentModal from '../components/modals.js/SetCurrentModal';
 
 const { Column, ColumnGroup } = Table;
 
@@ -17,20 +17,36 @@ const Tickets = observer ( () => {
     const {tickets, ticketProps} = useContext(Context)
     const navigate = useNavigate()
     tickets.tickets.map(i => i['key'] = i.id)
+    const { RangePicker } = DatePicker;
 
+    const { Search } = Input;
+    const onSearch = value => console.log(value);
     
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    
+    const setCurrent = (ticket) => {
+        tickets.setSelectedTicket(ticket)
+        setIsModalVisible(true)
+    }
 
     return ( 
 
         <div className='pageprops'>
-            <div style={{width: '70vw', marginTop: '1%'}}>
+            <div className='pageWidth' style={{ marginTop: '1%'}}>
             
             <PageHeader
               ghost={false}
               onBack={() => navigate(HOME_ROUTE)}
               title="Открытые заявки"
-            />
-            <div style={{width: '70vw', marginTop: '1%', }}>
+            >
+            <div className='pageWidth p-20' style={{display: 'flex', paddingTop: '1%', justifyContent: 'flex-start'}}>
+                <Space size={12}>
+                    <Search placeholder="Поиск" allowClear onSearch={onSearch} style={{ width: 200 }} />
+                    <RangePicker allowClear locale={locale} onChange={() => console.log('selected date')}/>
+                </Space>
+            </div>
+            </PageHeader>
+            <div className='pageWidth' style={{ marginTop: '1%', }}>
                 <Table 
                     dataSource={tickets.tickets} 
                     sortDirections= {['ascend', 'descend', 'ascend']} 
@@ -77,7 +93,7 @@ const Tickets = observer ( () => {
                       key="action"
                       render={(text, record) => (
                         <Space size="middle">
-                          <a>Назначить</a>
+                          <a onClick={ () => setCurrent(text)}>Назначить</a>
                           <a>Закрыть</a>
                         </Space>
                       )}
@@ -86,12 +102,14 @@ const Tickets = observer ( () => {
                         title="Приоритет" 
                         // dataIndex="priority" 
                         key="priority" 
-                        render ={ (record) => getPriorityIcon(record, ticketProps)}
-                        sorter = {(a, b) => a.priority.id - b.priority.id}
+                        render ={ (record) => getPriorityIcon(record)}
+                        sorter = {(a, b) => a.isPriority - b.isPriority}
                     />
                 </Table>
+                <SetCurrentModal show={isModalVisible} onHide={ () => setIsModalVisible(false)} />
             </div>
             </div>
+            
         </div>    
     );
 });

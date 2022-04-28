@@ -15,17 +15,15 @@ export const getStatusTag = (record, ticketProps) => {
        }
 }
 
-export const getPriorityIcon = (record, ticketProps) => { 
-    for (let i=0; i< ticketProps.priorities.length; i++) {
-       if (record.priority.name === ticketProps.priorities[i].name) {
-           switch (ticketProps.priorities[i].name) {
-                case 'НИЗКИЙ':
-                    return 
-                case 'СРЕДНИЙ':
-                    return <LineOutlined />
-                case 'ВЫСОКИЙ':
-                    return <ArrowUpOutlined style={{color: 'red'}}/> 
-           }
-       }
+export const getPriorityIcon = (record) => { 
+    switch(record.isPriority) {
+        case true:
+            return <ArrowUpOutlined style={{color: 'red'}}/> 
+        case false:
+            return
     }
+        
+           
+       
+    
 }

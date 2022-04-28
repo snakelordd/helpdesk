@@ -1,0 +1,40 @@
+export const locale = {
+  lang: {
+    locale: "ru_RU",
+    placeholder: "Выберите дату",
+    rangePlaceholder: ["Начало", "Конец"],
+    today: "Сегодня",
+    now: "Сейчас",
+    backToToday: "Сегодня",
+    ok: "OK",
+    clear: "Очистить",
+    month: "Месяц",
+    year: "Год",
+    timeSelect: "Выбрать время",
+    dateSelect: "Выбрать дату",
+    monthSelect: "Выберите месяц",
+    yearSelect: "Выберите год",
+    decadeSelect: "Выберите декаду",
+    yearFormat: "YYYY",
+    dateFormat: "D/M/YYYY",
+    dayFormat: "D",
+    dateTimeFormat: "D/M/YYYY HH:mm:ss",
+    monthFormat: "MMMM",
+    monthBeforeYear: true,
+    previousMonth: "Предыдущий месяц (PageUp)",
+    nextMonth: "Следующий месяц (PageDown)",
+    previousYear: "Прошлый год (Control + left)",
+    nextYear: "Следующий год (Control + right)",
+    previousDecade: "Предыдущая декада",
+    nextDecade: "Следующая декада",
+    previousCentury: "Предыдущий век",
+    nextCentury: "Следующий век"
+  },
+  timePickerLocale: {
+    placeholder: "Выберите время"
+  },
+  dateFormat: "DD-MM-YYYY",
+  dateTimeFormat: "DD-MM-YYYY HH:mm:ss",
+  weekFormat: "YYYY-wo",
+  monthFormat: "YYYY-MM"
+}

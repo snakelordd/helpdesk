@@ -71,14 +71,23 @@ class UserController {
         return res.json({token})
     }
     async getAllUsers(req, res) {
-        let {userRole} = req.query
+        let {role} = req.query
+        role = role.toUpperCase()
         let users
+        console.log(role)
+        if (!role) {
+            users = await User.findAll(
 
-        if (!userRole) {
-            users = await User.findAndCountAll()
+            )
         } 
-        if (userRole) {
-            users = await User.findAndCountAll({where: {userRole}})
+        if (role) {
+            users = await User.findAll(
+                {
+                    where: {role},
+                    attributes: ['id', 'email', 'role', 'avatar'],
+                    include: [ { model: UserInfo, attributes: ['name', 'address', 'organization', 'department']} ] 
+                }
+            )
         }
         return res.json(users)
     }

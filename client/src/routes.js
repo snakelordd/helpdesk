@@ -8,7 +8,8 @@ import Users from './pages/Users'
 import Create from './pages/Create'
 import TicketPage from './pages/nested/TicketPage'
 
-import { MANUAL_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, USERS_ROUTE, CURRENT_ROUTE, HOME_ROUTE, LOGIN_ROUTE, CREATE_ROUTE, CLOSED_ROUTE } from "./utils/consts"
+import { MANUAL_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, USERS_ROUTE, CURRENT_ROUTE, HOME_ROUTE, LOGIN_ROUTE, CREATE_ROUTE, CLOSED_ROUTE, PROFILE_ROUTE } from "./utils/consts"
+import Profile from './pages/Profile'
 
 export const authRoutes = [
     {
@@ -46,6 +47,10 @@ export const authRoutes = [
     {
         path: USERS_ROUTE,
         Component: <Users />
+    },
+    {
+        path: PROFILE_ROUTE,
+        Component: <Profile />
     },
 ]
 
