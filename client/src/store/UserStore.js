@@ -16,7 +16,9 @@ export default class UserStore {
                     address: 'Сибиряков-Гвардейцев, 34', 
                     organization: '',
                     department: 1,
-                    userId: 1
+                    userId: 1,
+                    fedPhone: '+7-962-828-4729',
+                    cityPhone: '249-59-01'
                 }
             }
         

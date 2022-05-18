@@ -28,6 +28,10 @@ const Tickets = observer ( () => {
         tickets.setSelectedTicket(ticket)
         setIsModalVisible(true)
     }
+    const setMyCurrent = (ticket) => {
+        tickets.setSelectedTicket(ticket)
+        
+    }
 
     return ( 
 
@@ -38,13 +42,15 @@ const Tickets = observer ( () => {
               ghost={false}
               onBack={() => navigate(HOME_ROUTE)}
               title="Открытые заявки"
-            >
-            <div className='pageWidth p-20' style={{display: 'flex', paddingTop: '1%', justifyContent: 'flex-start'}}>
+              extra={[
                 <Space size={12}>
+                
                     <Search placeholder="Поиск" allowClear onSearch={onSearch} style={{ width: 200 }} />
                     <RangePicker allowClear locale={locale} onChange={() => console.log('selected date')}/>
                 </Space>
-            </div>
+              ]}
+            >
+
             </PageHeader>
             <div className='pageWidth' style={{ marginTop: '1%', }}>
                 <Table 
@@ -93,8 +99,9 @@ const Tickets = observer ( () => {
                       key="action"
                       render={(text, record) => (
                         <Space size="middle">
-                          <a onClick={ () => setCurrent(text)}>Назначить</a>
-                          <a>Закрыть</a>
+                            <a onClick={ () => setMyCurrent(text)}>Ввести</a>
+                            <a onClick={ () => setCurrent(text)}>Назначить</a>
+                          
                         </Space>
                       )}
                     />

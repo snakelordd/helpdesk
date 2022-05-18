@@ -24,13 +24,6 @@ const Create = () => {
                     ghost={false}
                     onBack={() => window.history.back()}
                     title='Создать заявку'
-                    extra={[
-                    <Button key="3">Operation</Button>,
-                    <Button key="2">Operation</Button>,
-                    <Button key="1" type="primary">
-                      Primary
-                    </Button>,
-                  ]}
                 >
               
                 </PageHeader>

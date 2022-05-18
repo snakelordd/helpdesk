@@ -13,7 +13,7 @@
    
 }
 .content {
-    background-color: #d9d9d9;
+    background-color: #f0f0f0;
 
 }
 .pageprops {
@@ -23,7 +23,7 @@
     display: flex; 
     justify-content: center;
     flex-wrap: wrap;
-    background-color: #d9d9d9;
+    background-color: #f0f0f0;
 
 }
 
@@ -51,4 +51,14 @@
 .p-20 {
     padding-left: 30px;
     padding-right: 30px;
+}
+
+.categories {
+    width: 50%;
+}
+
+.settingsTabContent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }

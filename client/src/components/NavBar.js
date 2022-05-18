@@ -3,10 +3,10 @@ import { Context } from '..';
 import { Drawer, Menu, Avatar } from "antd"; //importing compnents from ant library
 import "../styles/Navbar.css"; //importing a css styling sheet
 import { HeaderSearch } from "./HeaderSearch";
-import {HomeOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined} from '@ant-design/icons'
+import {HomeOutlined, TagOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined} from '@ant-design/icons'
 import {observer} from 'mobx-react-lite'
 import { useNavigate, Link, } from 'react-router-dom';
-import { CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE } from '../utils/consts';
+import {CURRENT_ROUTE, CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE } from '../utils/consts';
 
 const NavBar = observer ( () => {
     
@@ -24,6 +24,7 @@ const NavBar = observer ( () => {
         setShown(false);
      };
     
+
     return (
         <nav
             className="menu"
@@ -52,12 +53,6 @@ const NavBar = observer ( () => {
                             <Menu.Item key="instructions" icon={<FileSearchOutlined />} onClick={()=> navigate(MANUAL_ROUTE)} >
                                 Инструкции
                             </Menu.Item>
-                            <Menu.Item key='signup' className='rightMenu' onClick={()=> navigate(REGISTRATION_ROUTE)}>
-                                Регистрация
-                            </Menu.Item>
-                            <Menu.Item key='signin' onClick={ () => user.setIsAuth(true)}>
-                                Войти
-                            </Menu.Item>
                         </Menu>                    
                     }
             </div>
@@ -69,22 +64,33 @@ const NavBar = observer ( () => {
                 onClose={drawerClosed}
                 visible={shown}
             > 
-                <Menu mode="vertical">
+                <Menu mode="vertical" selectable={false}>
                     <Menu.ItemGroup title='Мои заявки'>
-                        <Menu.Item key='open' icon={<TagsOutlined />} onClick={drawerClosed}>
-                            <Link to={TICKETS_ROUTE}>Открытые заявки</Link>
-                        </Menu.Item>
-                        <Menu.Item key='closed' icon={<LockOutlined />} onClick={drawerClosed}>
-                            <Link to={TICKETS_ROUTE}>Закрытые заявки</Link>
+                        <Menu.Item key='current' icon={<TagOutlined />} onClick={drawerClosed}>
+                            <Link to={CURRENT_ROUTE}>Мои заявки</Link>
                         </Menu.Item>
                     </Menu.ItemGroup>
+                        { user.user.role === 'ADMIN' && 
+                        <Menu.ItemGroup title='Все заявки'>
+                            <Menu.Item key='open' icon={<TagsOutlined />} onClick={drawerClosed}>
+                                <Link to={TICKETS_ROUTE}>Открытые заявки</Link>
+                            </Menu.Item>
+
+                            <Menu.Item key='closed' icon={<LockOutlined />} onClick={drawerClosed}>
+                                <Link to={TICKETS_ROUTE}>Закрытые заявки</Link>
+                            </Menu.Item>
+                        </Menu.ItemGroup>
+                        }
+                    
                     <Menu.ItemGroup title='Настройки' >
                         <Menu.Item key='profile' icon={<UserOutlined/>} onClick={drawerClosed}>
                             <Link to={PROFILE_ROUTE}>Мой профиль</Link> 
                         </Menu.Item>
+                        { user.user.role === 'ADMIN' &&
                         <Menu.Item key='settings' icon={<SettingOutlined />} onClick={drawerClosed}>
                             <Link to={SETTINGS_ROUTE}>Настройки</Link> 
                         </Menu.Item>
+                        }
                     </Menu.ItemGroup>
                 </Menu>
             </Drawer>       
