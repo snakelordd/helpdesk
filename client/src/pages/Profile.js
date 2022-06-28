@@ -3,72 +3,69 @@ import Search from 'antd/lib/transfer/search';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '..';
-import { MailOutlined, NumberOutlined , SolutionOutlined, EnvironmentOutlined, PhoneOutlined } from '@ant-design/icons';
+import { MailOutlined, NumberOutlined , SolutionOutlined, EnvironmentOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
+import { addUserInfo } from '../http/userAPI';
+import { observer } from 'mobx-react-lite';
 
 const Profile = () => {
-    console.log('myprofil page')
 
     const {user} = useContext(Context)
     const [showEditForm, setShowEditForm] = useState(false)
 
-    const userr = {
-        id: 1,
-        email: 'user@mail.ru',
-        password: '123',
-        role: 'ADMIN',
-        avatar: "staticAvatar.jpg",
-        userInfo: {
-            id: 1, 
-            name: 'Аптека 1', 
-            address: 'Сибиряков-Гвардейцев, 34', 
-            organization: '',
-            department: 1,
-            userId: 1,
-            fedPhone: '+7-962-828-4729',
-            cityPhone: '249-59-01'
-        }
-    }
+    console.log(user)
     const navigate = useNavigate()
 
+    const addInfo = (values) => {
+        console.log('Received values of form:', values);
+        const formData = new FormData()
+        formData.append('name', values.name)
+        formData.append('address', values.address)
+        formData.append('organization', values.organization)
+        formData.append('department', values.department)
+        formData.append('userId', user.user.id)
+        formData.append('fedPhone', values.fedPhone)
+        formData.append('cityPhone', values.cityPhone)
+        addUserInfo(formData).then( data => {
+            for(var pair of formData.entries()) {
+                console.log(pair[0]+ ', '+ pair[1]);
+             }
+        })
+        setShowEditForm(false)
+    }
+
+    const copy = () => {
+
+        
+    }
     const editForm = () => {
         return (
-            <Form name='userInfo'>
-                        <Descriptions title="Информация о пользователе">
-                            <Descriptions.Item label={<Space><SolutionOutlined />Юр. лицо</Space>}>
-                                <Form.Item  name={['user_info', 'organization']}>
-                                    <Input allowClear = 'true'/>
-                                </Form.Item>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={<Space><EnvironmentOutlined/>Место деятельности</Space>}>
-                                <Form.Item  name={['user_info', 'address']}>
-                                    <Input allowClear = 'true'/>
-                                </Form.Item>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={<Space><NumberOutlined />Номер аптеки</Space>}>
-                                <Form.Item  name={['user_info', 'department']}>
-                                    <Input allowClear = 'true'/>
-                                </Form.Item>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={<Space><MailOutlined />Эл. почта</Space>}>
-                                <Form.Item  name={['user_info', 'email']}>
-                                    <Input allowClear = 'true'/>
-                                </Form.Item>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={<Space><PhoneOutlined />Номер телефона</Space>}>
-                                <Form.Item  name={['user_info', 'fedPhone']}>
-                                    <Input allowClear = 'true'/>
-                                </Form.Item>
-                            </Descriptions.Item>
-                            <Descriptions.Item label={<Space><PhoneOutlined />Номер телефона</Space>}>
-                                <Form.Item  name={['user_info', 'cityPhone']}>
-                                    <Input allowClear = 'true'/>
-                                </Form.Item>
-                            </Descriptions.Item>
-                        </Descriptions>
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" onClick={()=> setShowEditForm(false)}>
-                                Применить
-                            </Button>
+            <Form name='userInfo' onFinish={addInfo} labelAlign='left' labelCol={{offset: 0, span: 5,  }} wrapperCol={{ span: 5 }} style={{width: '100%'}}>
+                        <h3>Информация о пользователе</h3>
+                        <br></br>
+                        <Form.Item label={<Space><UserOutlined />Имя</Space>} name={'name'}  >
+                            <Input  size='small' allowClear = 'true'/>
+                        </Form.Item>                            
+                        <Form.Item label={<Space><SolutionOutlined />Юр. лицо</Space>} name={'organization'} >
+                            <Input  size='small' allowClear = 'true'/>
+                        </Form.Item>                                                
+                        <Form.Item  label={<Space><EnvironmentOutlined/>Место деятельности</Space>} name={ 'address'} >
+                            <Input  size='small' allowClear = 'true'/>
+                        </Form.Item>
+                        <Form.Item  label={<Space><NumberOutlined />Номер аптеки</Space>} name={ 'department'}>
+                            <Input  size='small' allowClear = 'true'/>
+                        </Form.Item>
+                        <Form.Item label={<Space><MailOutlined />Эл. почта</Space>} name={'email'}>
+                            <Input  size='small' allowClear = 'true'/>
+                        </Form.Item>
+                        <Form.Item label={<Space><PhoneOutlined />Номер телефона</Space>} name={ 'fedPhone'}>
+                            <Input  size='small' allowClear = 'true'/>
+                        </Form.Item>
+                        <Form.Item label={<Space><PhoneOutlined />Городской телефон</Space>} name={'cityPhone'}>
+                            <Input   size='small' allowClear = 'true'/>
+                        </Form.Item>
+                    
+                        <Form.Item  style={{paddingTop: '20px', }}>
+                            <Button type="primary" htmlType="submit" > Сохранить изменения </Button>
                         </Form.Item>
             </Form>
         )
@@ -93,28 +90,34 @@ const Profile = () => {
                     <Card bordered={false}>
                       <Card.Meta
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                        title={user.user.userInfo.name}
-                        description={user.user.email}
+                        title={ user.user?.user_info?.name || user.user.email}
+                        description={user.user.hasOwnProperty('user_info') ? user.user.email : <a onClick={() => setShowEditForm(true)} >Добавить дополнительную информацию</a>}
                         
                       />
+                        { 
+                        user.user.hasOwnProperty('user_info') ?
                         <div style={{padding: '50px', paddingTop: 0}}>
                         <Divider />
                         {!showEditForm ?
                         <div>
-                        <Descriptions title="Информация о пользователе">
-                           {user.user.userInfo.organization && <Descriptions.Item label={<Space><SolutionOutlined />Юр. лицо</Space>}>{user.user.userInfo.organization}</Descriptions.Item>}
-                           {user.user.userInfo.address    && <Descriptions.Item label={<Space><EnvironmentOutlined/>Место деятельности</Space>}>{user.user.userInfo.address}</Descriptions.Item>}
-                           {user.user.userInfo.department    && <Descriptions.Item label={<Space><NumberOutlined />Номер аптеки</Space>}>{user.user.userInfo.department}</Descriptions.Item>}
+                        { user.user?.user_info &&
+                        <Descriptions title="Информация о пользователе" >
+                           {<Descriptions.Item label={<Space><SolutionOutlined />Юр. лицо</Space>}>{user.user?.user_info?.organization}</Descriptions.Item>}
+                           {user.user.user_info.address    && <Descriptions.Item label={<Space><EnvironmentOutlined/>Место деятельности</Space>}><a onClick={() => copy()}>{user.user.user_info.address}</a></Descriptions.Item>}
+                           {user.user.user_info.department    && <Descriptions.Item label={<Space><NumberOutlined />Номер аптеки</Space>}>{user.user.user_info.department}</Descriptions.Item>}
                            {user.user.email    && <Descriptions.Item label={<Space><MailOutlined />Эл. почта</Space>}><a>{user.user.email}</a></Descriptions.Item>}
-                           {user.user.userInfo.fedPhone    && <Descriptions.Item label={<Space><PhoneOutlined />Номер телефона</Space>}><a>{user.user.userInfo.fedPhone}</a></Descriptions.Item>}
-                           {user.user.userInfo.cityPhone    && <Descriptions.Item label={<Space><PhoneOutlined />Номер телефона</Space>}><a>{user.user.userInfo.cityPhone}</a></Descriptions.Item>}
+                           {user.user.user_info.fedPhone    && <Descriptions.Item label={<Space><PhoneOutlined />Номер телефона</Space>}><a>{user.user.user_info.fedPhone}</a></Descriptions.Item>}
+                           {user.user.user_info.cityPhone    && <Descriptions.Item label={<Space><PhoneOutlined />Номер телефона</Space>}><a>{user.user.user_info.cityPhone}</a></Descriptions.Item>}
                         </Descriptions>
-                        {user.user.role === 'ADMIN' && <a onClick={() => setShowEditForm(true)}>Редактировать информацию</a>}
+                        }
+                       <a onClick={() => setShowEditForm(true)}>Редактировать информацию</a>
                         </div>
                         :
                         editForm()
                         }
                         </div>
+                         :  showEditForm && editForm()
+                        }
                     </Card>
                     
                     </div>
@@ -124,4 +127,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default observer (Profile);

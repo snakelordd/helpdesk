@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import { PageHeader, Button, Descriptions, Tag, Divider, Form, Input, Select, Space, message } from 'antd';
 import { Context } from '..';
+import { observer } from 'mobx-react-lite';
+import { createTicket } from '../http/ticketAPI';
+import { useNavigate } from 'react-router-dom';
+import { TICKET_ROUTE } from '../utils/consts';
 
 
 const layout = {
@@ -9,12 +13,41 @@ const layout = {
   };
 
 const Create = () => {
-    const {ticketProps} = useContext(Context)
-    const { Option } = Select;
+    const {ticketProps, user} = useContext(Context)
+    const { Option } = Select; 
 
     const {categories} = ticketProps
     
+    const navigate = useNavigate()
+    const [form] = Form.useForm();
 
+    const openMessage = (id) => {
+      message.loading({ content: 'Создание заявки...', key: 'message', style: {
+        marginTop: '20vh',
+      } } );
+      setTimeout(() => {
+        message.success({ content: <span>Заявка создана! <a onClick={ () => navigate(TICKET_ROUTE + '/' + id)}>Перейти</a></span>, key: 'message', duration: 2, style: {
+          marginTop: '20vh',
+        } });
+        form.resetFields() 
+      }, 1000);
+    };
+
+    const onFinish = (values) => {
+      const formData = new FormData()
+      
+      formData.set('categoryId', `${values.category}`)
+      formData.set('title', values.title)
+      formData.set('description', values.body)
+      formData.set('userId', user.user.id)
+      
+      formData.get('title')
+      createTicket(formData).then( data => {
+        if (data) {
+         openMessage(data?.id)
+        }
+      })
+    }
 
     return (
     <div className="pageprops" >
@@ -34,8 +67,8 @@ const Create = () => {
             <h3 style={{paddingTop: '1%', paddingLeft: '2%'}}>Создать заявку</h3>
                   
             <Divider style={{marginTop: '-5px'}}/>
-            <Form  {...layout} name="nest-messages" onFinish={() =>message.success({content: 'Заявка создана', style: {marginTop: '10%'}})} style={{paddingTop: '15px'}}>
-                <Form.Item name={['ticket', 'category']} label='Категория' rules={[{ required: true }]} help='Выберите категорию'>
+            <Form  {...layout} name="nest-messages" onFinish={onFinish} style={{paddingTop: '15px'}} form={form}>
+                <Form.Item name='category' label='Категория' rules={[{ required: true }]} help='Выберите категорию'>
                 
                     <Select
                       showSearch
@@ -54,16 +87,19 @@ const Create = () => {
                     )}
                     </Select>
                 </Form.Item>
-                <Form.Item name={['ticket', 'title']} label="Тема заявки" rules={[{ required: true }] } help='Тема вашего обращения'>
+                <Form.Item name='title' label="Тема заявки" rules={[{ required: true }] } help='Тема вашего обращения'>
                     <Input allowClear = 'true'/>
                 </Form.Item>
-                <Form.Item name={['ticket', 'body']} label="Описание" rules={[{ required: true }]} help='Опишите вашу проблему'>
+                <Form.Item name='body' label="Описание" rules={[{ required: true }]} help='Опишите вашу проблему'>
                     <Input.TextArea autoSize={{minRows: 6}}/>
                 </Form.Item>
+                <Form.Item hidden name= 'userId' initialValue={user.user.id}>
+                  <Input />
+                </Form.Item>
                 <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" >
                         Создать заявку
-                    </Button>
+                    </Button >
                 </Form.Item>
               </Form>
 
@@ -73,4 +109,4 @@ const Create = () => {
     );
 };
 
-export default Create;
+export default observer (Create);

@@ -4,7 +4,7 @@ const ticketController = require('../controllers/ticketController')
 const router = new Router()
 
 
-router.get('/:currentId/:ticketId', currentController.getOneCurrent)
+
 router.get('/:currentId', currentController.getMyCurrent)
 
 module.exports = router

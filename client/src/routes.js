@@ -4,11 +4,12 @@ import Home from './pages/Home'
 import Manuals from './pages/Manuals'
 import Settings from './pages/Settings'
 import Tickets from './pages/Tickets'
+import ClosedTickets from './pages/ClosedTickets'
 import Users from './pages/Users'
 import Create from './pages/Create'
 import TicketPage from './pages/nested/TicketPage'
 
-import { MANUAL_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, USERS_ROUTE, CURRENT_ROUTE, HOME_ROUTE, LOGIN_ROUTE, CREATE_ROUTE, CLOSED_ROUTE, PROFILE_ROUTE } from "./utils/consts"
+import { MANUAL_ROUTE, CLOSED_TICKETS_ROUTE ,REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, TICKET_ROUTE, USERS_ROUTE, CURRENT_ROUTE, HOME_ROUTE, LOGIN_ROUTE, CREATE_ROUTE, CLOSED_ROUTE, PROFILE_ROUTE } from "./utils/consts"
 import Profile from './pages/Profile'
 
 export const authRoutes = [
@@ -16,10 +17,10 @@ export const authRoutes = [
         path: TICKETS_ROUTE,
         Component: <Tickets />
     },
-    {
-        path: CLOSED_ROUTE,
-        Component: <Tickets />
-    },
+     {
+         path: CLOSED_TICKETS_ROUTE,
+         Component: <Tickets />
+     },
     {
         path: TICKETS_ROUTE + '/:id',
         Component: <TicketPage />
@@ -51,6 +52,10 @@ export const authRoutes = [
     {
         path: PROFILE_ROUTE,
         Component: <Profile />
+    },
+    {
+        path: MANUAL_ROUTE,
+        Component: <Manuals />
     },
 ]
 

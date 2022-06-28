@@ -1,5 +1,5 @@
 const ApiError = require("../error/ApiError")
-const { UserInfo, User, Current } = require("../models/models")
+const { UserInfo, User, Current, Token } = require("../models/models")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -29,20 +29,26 @@ class UserController {
         
         const token = generateJwt(user.id, user.email, user.role)
 
+        await Token.create( {
+            userId: user.id,
+            refToken: token
+        })
+
         return res.json({token})
     }
 
     async setInfo(req, res, next) {
         try {
-            const {name, address, organization, department, userId} = req.body
-
+            const {name, address, organization, department, userId, fedPhone, cityPhone} = req.body
             const userInfo = await UserInfo.create(
                 {
                     name, 
                     address,  
                     organization,  
                     department,
-                    userId: userId
+                    userId: userId,
+                    fedPhone,
+                    cityPhone
                 }) 
 
           return res.json(userInfo)
@@ -64,12 +70,32 @@ class UserController {
         }
         const token = generateJwt(user.id, user.email, user.role)
 
+         await Token.update( {
+             refToken: token
+             },
+             {where: {userId: user.id},
+            
+         })
+
         return res.json({token})
     }
     async check(req, res, next) {
-        const token = generateJwt(req.user.id, req.user.email, req.user.role)
-        return res.json({token})
+
+        const user = await User.findOne( {where: {id: req.user.id}, attributes: ['id', 'email', 'role', 'avatar'] })
+        const token = await Token.findOne( 
+             {
+                 where: {userId: req.user.id}
+             } )
+          if (token?.refToken === req?.token) {
+             return res.json({token: token.refToken, user: user})
+          }
+          else {
+              return generateJwt(req.user.id, req.user.email, req.user.role)
+          }
+        //  const token = generateJwt(req.user.id, req.user.email, req.user.role)
+        //  return res.json({token})
     }
+    
     async getAllUsers(req, res) {
         let {role} = req.query
         role = role.toUpperCase()
@@ -85,7 +111,7 @@ class UserController {
                 {
                     where: {role},
                     attributes: ['id', 'email', 'role', 'avatar'],
-                    include: [ { model: UserInfo, attributes: ['name', 'address', 'organization', 'department']} ] 
+                    include: [ { model: UserInfo, attributes: ['name', 'address', 'organization', 'department', 'cityPhone', 'fedPhone']} ] 
                 }
             )
         }
@@ -98,7 +124,7 @@ class UserController {
                 {
                     where: {id},
                     attributes: ['id', 'email', 'role', 'avatar'],
-                    include: [ { model: UserInfo, attributes: ['name', 'address', 'organization', 'department']} ]
+                    include: [ { model: UserInfo, attributes: ['name', 'address', 'organization', 'department', 'cityPhone', 'fedPhone']} ]
                 }, 
             
             ) 

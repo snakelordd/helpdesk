@@ -3,16 +3,14 @@ import { Context } from '..';
 import { Drawer, Menu, Avatar } from "antd"; //importing compnents from ant library
 import "../styles/Navbar.css"; //importing a css styling sheet
 import { HeaderSearch } from "./HeaderSearch";
-import {HomeOutlined, TagOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined} from '@ant-design/icons'
+import {HomeOutlined, TagOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined, LogoutOutlined} from '@ant-design/icons'
 import {observer} from 'mobx-react-lite'
 import { useNavigate, Link, } from 'react-router-dom';
-import {CURRENT_ROUTE, CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE } from '../utils/consts';
+import {CURRENT_ROUTE, CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, CLOSED_TICKETS_ROUTE } from '../utils/consts';
 
 const NavBar = observer ( () => {
     
     const {user} = useContext(Context)
-    // console.log(user.isAuth)
-    
     const navigate = useNavigate()
 
     const [shown, setShown] = useState(false);
@@ -24,7 +22,11 @@ const NavBar = observer ( () => {
         setShown(false);
      };
     
-
+    const logout = () => {
+        user.setIsAuth(false)
+        user.setUser({})
+    }
+    
     return (
         <nav
             className="menu"
@@ -32,12 +34,12 @@ const NavBar = observer ( () => {
             <div className="Navbar">
                     {user.isAuth ? 
                         <Menu mode='horizontal' style={{height: 'inherit', paddingTop: '10px', paddingBottom: '5px'}} >
-                            <Menu.Item key="home" icon={<HomeOutlined/>} onClick={()=> navigate(HOME_ROUTE)} >
+                            {/* <Menu.Item key="home" icon={<HomeOutlined/>} onClick={()=> navigate(HOME_ROUTE)} >
                                 Главная
                             </Menu.Item>
                             <Menu.Item key="instructions" icon={<FileSearchOutlined />} onClick={()=> navigate(MANUAL_ROUTE)}>
                                 Инструкции
-                            </Menu.Item>
+                            </Menu.Item> */}
                             <Menu.Item key="newticket" icon={<PlusCircleOutlined /> } onClick={()=> navigate(CREATE_ROUTE)}>
                                 Создать заявку
                             </Menu.Item>
@@ -45,7 +47,7 @@ const NavBar = observer ( () => {
                                 <HeaderSearch/>
                             </Menu.Item> 
                             <Menu.Item key="user" icon={<Avatar icon={<UserOutlined />} />} onClick={showSidebar}>
-                                { user.user.userInfo.name }
+                                {user.user?.userInfo?.name || user.user.email }
                             </Menu.Item>
                         </Menu>
                         :
@@ -57,14 +59,16 @@ const NavBar = observer ( () => {
                     }
             </div>
             <Drawer
-            title={user.user.userInfo.name}
+            title={user.user?.userInfo?.name || user.user.email}
                 placement="right"
                 className="menu-drawer"
                 closable={false}
                 onClose={drawerClosed}
                 visible={shown}
-            > 
-                <Menu mode="vertical" selectable={false}>
+                style={{height: '100vh'}}
+            >        
+            <div style={{height: '100%', display: 'flex',  flexDirection: 'column', justifyContent: 'space-between'}}>
+                <Menu mode="vertical" selectable={false} >
                     <Menu.ItemGroup title='Мои заявки'>
                         <Menu.Item key='current' icon={<TagOutlined />} onClick={drawerClosed}>
                             <Link to={CURRENT_ROUTE}>Мои заявки</Link>
@@ -77,7 +81,7 @@ const NavBar = observer ( () => {
                             </Menu.Item>
 
                             <Menu.Item key='closed' icon={<LockOutlined />} onClick={drawerClosed}>
-                                <Link to={TICKETS_ROUTE}>Закрытые заявки</Link>
+                                <Link to={CLOSED_TICKETS_ROUTE}>Закрытые заявки</Link>
                             </Menu.Item>
                         </Menu.ItemGroup>
                         }
@@ -93,6 +97,14 @@ const NavBar = observer ( () => {
                         }
                     </Menu.ItemGroup>
                 </Menu>
+                <Menu >
+                    <Menu.ItemGroup >    
+                        <Menu.Item key='logout' icon={<LogoutOutlined />}>
+                            <a onClick={logout}> Выйти</a>
+                        </Menu.Item>
+                </Menu.ItemGroup>
+                </Menu>
+                </div>
             </Drawer>       
         </nav>
     );

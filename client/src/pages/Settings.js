@@ -1,12 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { PageHeader, Select, Space, message, Tabs, Form, Input, Button, Menu, Modal} from 'antd';
 import { Context } from '..';
 import { MailOutlined, StarOutlined, AppstoreOutlined, AppstoreAddOutlined, SettingOutlined, MinusCircleOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import FormItem from 'antd/lib/form/FormItem';
+import { createProp, fetchProps } from '../http/ticketPropsAPI';
+import { observer } from 'mobx-react-lite';
 
 const { TabPane } = Tabs;
-
-
 
 const layout = {
     labelCol: { span: 4 },
@@ -17,62 +17,70 @@ function callback(key) {
     console.log(key);
 }
 
+
 const Settings = () => {
   const {ticketProps} = useContext(Context)
-
   const [current, setCurrent] = React.useState('1');
   const [inputType, setInputType] = useState('category')
+
   const [disableInput, setDisableInput] = useState(true)
-
-  const { Option } = Select;
-
   const {categories, statuses} = ticketProps
-  
-  const fields = [{name: 'printers'}]
-  
-  const { confirm } = Modal;
 
-  function showConfirm(category) {
-    confirm({
-      icon: <ExclamationCircleOutlined />,
-      content: `Вы действительно хотите удалить категорию ${category}`,
-      width: 500,
-      centered: true,
-      okText: 'Да',
-      cancelText: 'Отмена',
-      onOk() {
-        console.log('OK');
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    }); 
-  }
+  useEffect( () => {
+    fetchProps('category').then( data => ticketProps.setCategories(data.data))
+    fetchProps('status').then( data => ticketProps.setStatuses(data.data))
+    setInterval([])
+  }, [])
 
-  const onFinish = values => {
+  const openMessage = () => {
+    message.loading({ content: 'Загрузка...', key: 'message', style: {
+      marginTop: '20vh',
+    } });
+    setTimeout(() => {
+      message.success({ content: 'Успешно!', key: 'message', duration: 2, style: {
+        marginTop: '20vh',
+      } });
+    }, 1000);
+  };
+
+  const onFinishCategory = values => {
       console.log('Received values of form:', values);
+      createProp(null,  values.category).then(data => {
+        if (data.status === 200) {
+          fetchProps('category').then( data => ticketProps.setCategories(data.data)) 
+          openMessage()
+        }
+      })
   }
 
-  const onClick = (e) => {
-      console.log('click ', e);
-      setCurrent(e.key);
-    };
-  
+  const onFinishStatus = values => {
+    console.log('Received values of form:', values);
+    createProp(values.status, null).then(data => {
+      if (data.status === 200) {
+        fetchProps('status').then( data => ticketProps.setStatuses(data.data))
+        openMessage()
+      }
+    })
+}
+
   const inputForm = (formType) => {
       switch (formType) {
         case 'category':
           return (
             <>
               <h2>Создать новую категорию</h2>
-              <Form name='category' >
-              <Form.Item rules={[{ required: true }]} style={{paddingBottom: '10px'}}>
-                <Space>
-                    <Input style={{width: '300px'}} placeholder='Введите название категории' allowClear='true'/>
-                    <Button type="primary" htmlType="submit" onClick={()=> alert('x')}>
-                      Создать
-                    </Button>
-                </Space>              
+              <Form name='category' onFinish={onFinishCategory} >
+              <Space>
+
+              <Form.Item name='category' rules={[{ required: true }]} style={{paddingBottom: '10px'}}>
+                <Input style={{width: '300px'}} placeholder='Введите название категории' allowClear='true'/>
               </Form.Item>
+              <Form.Item style={{paddingBottom: '10px'}}>
+                <Button type="primary" htmlType='submit'>Создать</Button>
+              </Form.Item>
+              
+              </Space>              
+              
               </Form>
               { categories.length != 0 ?
               <Form name='updateCategory'> 
@@ -105,15 +113,17 @@ const Settings = () => {
           return (
             <>
               <h2>Создать новый статус</h2>
-              <Form name='status' >
-              <Form.Item rules={[{ required: true }]} style={{paddingBottom: '10px'}}>
-                <Space>
-                    <Input style={{width: '300px'}} placeholder='Введите название статуса' allowClear='true'/>
-                    <Button type="primary" htmlType="submit" onClick={()=> alert('x')}>
-                      Создать
-                    </Button>
-                </Space>              
+              <Form name='status' onFinish={onFinishStatus}>
+              <Space>
+              <Form.Item name='status' rules={[{ required: true }]} style={{paddingBottom: '10px'}}>
+                  <Input style={{width: '300px'}} placeholder='Введите название статуса' allowClear='true'/>
               </Form.Item>
+              <Form.Item style={{paddingBottom: '10px'}}>
+                  <Button type="primary" htmlType="submit">
+                    Создать
+                  </Button>             
+              </Form.Item>
+              </Space>
               </Form>
               { statuses.length != 0 ? 
               <Form name='updateStatus'> 
@@ -129,7 +139,7 @@ const Settings = () => {
                   <Space>
                     <Input style={{width: '300px'}} defaultValue={item.name} disabled={disableInput}/>
                     {!disableInput &&
-                    <Button  htmlType="submit" onClick={()=> alert('ok')}>
+                    <Button  htmlType="submit">
                       Применить
                     </Button>
                     }
@@ -188,4 +198,4 @@ const Settings = () => {
     );
 };
 
-export default Settings;
+export default observer(Settings);

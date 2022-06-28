@@ -5,7 +5,7 @@ const ApiError = require('../error/ApiError')
 class TicketSettingsController {
     async create(req, res, next) {
         try {
-            const {category, status, priority} = req.body
+            const {category, status, tag} = req.body
         let setting
          if (category) {
              const candidate = await Category.findOne( {where: {name: category}})
@@ -20,16 +20,8 @@ class TicketSettingsController {
              if (candidate) {
                  return next(ApiError.badRequest('Поле с таким именем уже существует'))
              }
-             setting = await Status.create({name: status})
+             setting = await Status.create({name: status, tag})
          } 
-         if (priority) {
-             const candidate = await Priority.findOne( {where: {name: priority}})
-             if (candidate) {
-                 return next(ApiError.badRequest('Поле с таким именем уже существует'))
-             }
-             setting = await Priority.create({name: priority})
-        }
-
         return res.json(setting)
         }
         catch (e) {
@@ -42,13 +34,10 @@ class TicketSettingsController {
         let {option} = req.query
         let setting 
         if (option === 'category' || !option) {
-            setting = await Category.findAndCountAll()
+            setting = await Category.findAll()
         } 
         if (option === 'status') {
             setting = await Status.findAll()
-        }
-        if (option === 'priority') {
-            setting = await Priority.findAll()
         }
 
         return res.json(setting)

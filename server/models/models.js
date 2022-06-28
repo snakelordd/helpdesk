@@ -10,10 +10,12 @@ const User = sequelize.define('user', {
 })
 
 const UserInfo = sequelize.define('user_info', {
-    name: {type: DataTypes.STRING},
-    address: {type: DataTypes.STRING},
-    organization: {type: DataTypes.STRING},
-    department: {type: DataTypes.STRING},
+    name: {type: DataTypes.STRING, defaulValue: null},
+    address: {type: DataTypes.STRING, defaulValue: null},
+    organization: {type: DataTypes.STRING, defaulValue: null},
+    department: {type: DataTypes.STRING, defaulValue: null},
+    fedPhone: {type: DataTypes.STRING, defaulValue: null},
+    cityPhone: {type: DataTypes.STRING, defaulValue: null},
 })
 
 const Current = sequelize.define('current', {
@@ -43,12 +45,13 @@ const Category = sequelize.define('category', {
 
 const Status = sequelize.define('status', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    name: {type: DataTypes.STRING, allowNull: false}
+    name: {type: DataTypes.STRING, allowNull: false},
+    tag: {type: DataTypes.STRING, defaultValue: null}
 })
 
 const Message = sequelize.define('message', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    body: {type: DataTypes.STRING, allowNull: false},
+    body: {type: DataTypes.TEXT, allowNull: false},
     isLog: {type: DataTypes.BOOLEAN, defaultValue: false}
 })
 
@@ -57,10 +60,10 @@ const Attachment = sequelize.define('attachment', {
     attachment: {type: DataTypes.STRING, allowNull: false}, 
 })
 
-// const TicketUser = sequelize.define('ticket_user', {
-//     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-// })
-
+const Token = sequelize.define('token', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    refToken: {type: DataTypes.STRING, allowNull: false}
+})
 
 User.hasOne(UserInfo)
 UserInfo.belongsTo(User)
@@ -68,14 +71,14 @@ UserInfo.belongsTo(User)
 User.hasOne(Current)
  Current.belongsTo(User)
 
+User.hasOne(Token)
+Token.belongsTo(User)
+
 Current.hasMany(CurrentTicket)
  CurrentTicket.belongsTo(Current)
 
 User.hasMany(Message)
 Message.belongsTo(User)
-
-//User.hasMany(Ticket, {as: 'author'})
-//Ticket.belongsTo(User)
 
 Current.belongsToMany(Ticket, {through: CurrentTicket})
 Ticket.belongsToMany(Current, {through: CurrentTicket})
@@ -98,6 +101,8 @@ Ticket.belongsTo(Category)
 Status.hasMany(Ticket)
 Ticket.belongsTo(Status)
 
+
+
 module.exports = {
     User,
     UserInfo,
@@ -108,5 +113,6 @@ module.exports = {
     Category,
     Status,
     Message,
-    Attachment
+    Attachment,
+    Token
 }

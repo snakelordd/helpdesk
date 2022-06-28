@@ -1,23 +1,40 @@
 import React, { useContext, useState } from 'react';
 import { Modal, Button, Form, Input, Space, Select } from 'antd';
 import { Context } from '../..';
+import { updateTicket } from '../../http/ticketAPI';
 
 
 const TicketCloseModal = ({show, onHide}) => {
-  
+  const {user} = useContext(Context)
+
   const {tickets, ticketProps} = useContext(Context)
 
   const handleOk = () => {
     console.log(tickets.selectedTicket)
+    updateTicket()
   };
 
+  const updateHandler = values => {
+    const formData = new FormData()
+    formData.append('statusId', values.status)
+    formData.append('message', values.body)
+    formData.append('userId', user.user.id)
+    
+    // values.body && formData.append('body', values.body)
+    updateTicket(tickets.selectedTicket.id, formData)
+    console.log(values)
+  }
   return (
 
     <>
-      <Modal title="Закрыть заявку" visible={show} onOk={handleOk} onCancel={onHide} centered width={800}>
+      <Modal title="Закрыть заявку" visible={show}  onCancel={onHide} centered width={800} footer={[
+        <Button form="close" type='primary' key="submit" htmlType="submit" >
+            Применить
+        </Button>
+        ]}>
         <h2>Заявка {tickets.selectedTicket ? tickets.selectedTicket.id : 0}</h2>
-        <Form style={{display: 'flex',  marginTop: '20px'}}>  
-            <Form.Item name={['ticket', 'status']} help='Выберите статус заявки' style={{width: '25%',}}>
+        <Form id='close' onFinish={updateHandler} style={{display: 'flex',  marginTop: '20px' }}>  
+            <Form.Item name={'status'} help='Выберите статус заявки' style={{width: '25%',}}>
                 
                     <Select
                         
@@ -41,7 +58,7 @@ const TicketCloseModal = ({show, onHide}) => {
                 
                 
             </Form.Item>
-            <Form.Item name={['ticket', 'comment']} help='Необязательно' style={{width: '76%', marginLeft: '1%'}}>
+            <Form.Item name={ 'body'} help='Необязательно' style={{width: '76%', marginLeft: '1%'}}>
                 <Input placeholder='Комментарий'/>
             </Form.Item>
         </Form>

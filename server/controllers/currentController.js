@@ -10,7 +10,11 @@ class CurrentController {
             limit = limit || 10
             let offset = page * limit - limit
             
-            const current = await CurrentTicket.findAll( {where: {currentId}, include: {model: Ticket}})
+            const current = await CurrentTicket.findAll( 
+                {
+                    where: {currentId}, 
+                })
+
             return res.json(current)
         }
         catch (e) {

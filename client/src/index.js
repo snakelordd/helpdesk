@@ -6,7 +6,11 @@ import UserStore from './store/UserStore';
 import TicketPropsStore from './store/TicketPropsStore';
 import MessageStore from './store/MessageStore';
 import './styles/styles.css'
+import env from "react-dotenv";
+
 export const Context = createContext(null)
+
+
 
 ReactDOM.render(
     <Context.Provider value={

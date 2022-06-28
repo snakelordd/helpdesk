@@ -25,10 +25,11 @@ class chatController {
                 )
             }
             else attachment = {id: null}
-
+            let msg = null;
+            body ? msg = body : msg
             let message = await Message.create(
                 {
-                    body,
+                    body: msg,
                     isLog: false,
                     userId,
                     chatId,
@@ -44,24 +45,17 @@ class chatController {
     async getMsg(req, res) {
         const {id} = req.params
 
-        const {chatId, userId} = await Ticket.findOne( {where: {id}})
+        const {chatId} = await Ticket.findOne( {where: {id}})
 
         const messages = await Message.findAll( 
             {
                 where: {chatId: chatId},
-                include: [ { model: Attachment }]
+                include: [ { model: Attachment }, { model: User, attributes: ['email']}],
+                order: [
+                    ['createdAt', 'DESC']
+                ],
             })
-
-
-        // const user = await User.findOne( 
-        //     {
-        //         where: {id: userId} ,
-        //         include: [ {model: UserInfo} ]
-        //     })
-        // const {avatar, department, email} = user
-
-        // const author = {avatar, department, email, userId}
-
+        
         return res.json(messages)
     }
 }

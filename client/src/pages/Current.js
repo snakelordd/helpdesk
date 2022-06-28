@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../styles/styles.css'
 import { Table, Tag, Space, PageHeader, Divider, Input, DatePicker } from 'antd';
 import { Context } from '..';
@@ -8,12 +8,28 @@ import { observer } from 'mobx-react-lite';
 import { getFormatDate, getStatusTag, getPriorityIcon } from './CommonFunctions';
 import {locale} from '../utils/locale'
 import SetCurrentModal from '../components/modals.js/SetCurrentModal';
+import { fetchTickets } from '../http/ticketAPI';
+import { fetchProps } from '../http/ticketPropsAPI';
+import { fetchCurrent } from '../http/currentAPI';
+
 
 const { Column, ColumnGroup } = Table;
 
 
 const Current = () => {
-    const {tickets, ticketProps} = useContext(Context)
+    const {tickets, ticketProps, user} = useContext(Context)
+    const [myCurrent, setMyCurrent] = useState()
+
+
+    useEffect( () => {
+        fetchTickets().then( data => {
+            console.log(data)
+            tickets.setTickets(data.rows)})
+    
+    
+    fetchProps('category').then( data => ticketProps.setCategories(data.data))
+    fetchProps('status').then( data => ticketProps.setStatuses(data.data))
+    }, [])
 
     const navigate = useNavigate()
     tickets.tickets.map(i => i['key'] = i.id)
@@ -58,25 +74,21 @@ const Current = () => {
                     <Column 
                         title="Номер заявки" 
                         dataIndex="id" 
-                        key="id" 
                         render={ (text, record) => (<a onClick={ ()=> navigate(TICKETS_ROUTE + '/' + record.id)} >{text}</a>)}
                     />
                     <Column 
                         title="Тема заявки" 
                         dataIndex="title" 
-                        key="title" 
                         render={ (text, record) => (<div style={{cursor: 'pointer'}} onClick={ ()=> navigate(TICKETS_ROUTE + '/' + record.id)} >{text}</div>)}
                     />
                     <Column 
                         title="Категория" 
                         dataIndex={"category"} 
-                        key="category" 
                         render={ (text, record) => <span>{record.category.name}</span>}
                         sorter = {(a, b) => a.category.id - b.category.id}
                     />
                     <Column 
                         title="Создан" 
-                        key="createdAt" 
                         render = {(text, record) => getFormatDate(record) }
                         defaultSortOrder = 'descend'
                         sorter = { (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt)}
@@ -85,13 +97,12 @@ const Current = () => {
 
                     <Column 
                         title="Статус" 
-                        key="status" 
                         render={ (text, record) => <Tag color={getStatusTag(record, ticketProps)}>{text.status.name}</Tag>}
                             // getStatusTag(record)}
                         sorter = {(a, b) => a.status.id - b.status.id}
                     />
 
-                    <Column
+                    {/* <Column
                       title="Action"
                       key="action"
                       render={(text, record) => (
@@ -100,11 +111,10 @@ const Current = () => {
                           
                         </Space>
                       )}
-                    />
+                    /> */}
                     <Column 
                         title="Приоритет" 
                         // dataIndex="priority" 
-                        key="priority" 
                         render ={ (record) => getPriorityIcon(record)}
                         sorter = {(a, b) => a.isPriority - b.isPriority}
                     />
@@ -117,4 +127,4 @@ const Current = () => {
     );
 };
 
-export default Current;
+export default observer (Current);
