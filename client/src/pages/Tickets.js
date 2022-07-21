@@ -17,10 +17,8 @@ const Tickets = observer ( () => {
     const {tickets, ticketProps} = useContext(Context)
 
     useEffect( () => {
-            fetchTickets().then( data => {
-                tickets.setTickets(data.rows)})
-        
-        
+        fetchTickets().then( data => {
+            tickets.setTickets(data.rows)})
         fetchProps('category').then( data => ticketProps.setCategories(data.data))
         fetchProps('status').then( data => ticketProps.setStatuses(data.data))
     }, [])
@@ -43,6 +41,9 @@ const Tickets = observer ( () => {
         tickets.setSelectedTicket(ticket)
     }
 
+    const onHide = () => {
+        setIsModalVisible(false)
+    }
     return ( 
         <div className='pageprops'>
             <div className='pageWidth ' style={{ marginTop: '1%'}}>
@@ -81,8 +82,8 @@ const Tickets = observer ( () => {
                     <Column 
                         title="Категория" 
                         dataIndex={"category"} 
-                        render={ (text, record) => <span>{record.category.name}</span>}
-                        sorter = {(a, b) => a.category.id - b.category.id}
+                        render={ (text, record) => <span>{record.category?.name}</span>}
+                        sorter = {(a, b) => a.category?.id - b.category?.id}
                         
                     />
                     <Column 
@@ -95,8 +96,7 @@ const Tickets = observer ( () => {
 
                     <Column 
                         title="Статус" 
-                        render={ (text, record) => <Tag color={getStatusTag(record, ticketProps)}>{text.status.name}</Tag>}
-                            // getStatusTag(record)}
+                        render={ (text, record) => <Tag color={text.status.tag}>{text.status.name}</Tag>}
                         sorter = {(a, b) => a.status.id - b.status.id}
                     />
 
@@ -118,7 +118,7 @@ const Tickets = observer ( () => {
                         sorter = {(a, b) => a.isPriority - b.isPriority}
                     />
                 </Table>
-                <SetCurrentModal show={isModalVisible} onHide={ () => setIsModalVisible(false)} />
+                <SetCurrentModal show={isModalVisible} onHide={onHide} />
             </div>
             </div>
             

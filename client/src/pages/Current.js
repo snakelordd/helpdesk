@@ -84,7 +84,7 @@ const Current = () => {
                     <Column 
                         title="Категория" 
                         dataIndex={"category"} 
-                        render={ (text, record) => <span>{record.category.name}</span>}
+                        render={ (text, record) => <span>{record.category?.name}</span>}
                         sorter = {(a, b) => a.category.id - b.category.id}
                     />
                     <Column 

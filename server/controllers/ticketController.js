@@ -3,6 +3,7 @@ const ApiError = require('../error/ApiError')
 const uuid = require('uuid')
 const path = require('path')
 const { Op } = require('sequelize')
+const closedId = process.env.CLOSED_ID
 
 class TicketController {
     async create(req, res, next) {
@@ -85,10 +86,10 @@ class TicketController {
             tickets = await Ticket.findAndCountAll(
                 {
                     where: {
-                        statusId: { [Op.ne]: 2 }, // проверка на закрытую заявку
+                        statusId: { [Op.ne]: closedId }, // проверка на закрытую заявку
                     }, 
                     attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'isPriority'],
-                    include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name']}],
+                    include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name', 'tag']}],
                     limit, 
                     offset
                 })
@@ -97,10 +98,10 @@ class TicketController {
             tickets = await Ticket.findAndCountAll(
                 {
                     where: {
-                        statusId: 2 // проверка на закрытую заявку
+                        statusId: closedId // проверка на закрытую заявку
                     }, 
                     attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'isPriority'],
-                    include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name']}],
+                    include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name', 'tag']}],
                     limit, 
                     offset
                 })
@@ -147,7 +148,7 @@ class TicketController {
             {
                 where: {id },
                 attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'isPriority', 'userId'],
-                include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name']}]
+                include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name', 'tag']}]
 
             }
         )

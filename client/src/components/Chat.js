@@ -9,9 +9,9 @@ import { observer } from 'mobx-react-lite';
 import { createMessage, fetchMessages } from '../http/chatAPI';
 import { fetchOneUser } from '../http/userAPI';
 
-const Chat = observer (({author, ticketId, chatId}) => {
+const Chat = observer (({author, ticketId, chatId, messages, setMessages}) => {
     //const {messages} = useContext(Context)
-    const [messages, setMessages] = useState()
+    // const [messages, setMessages] = useState()
     const auth = useContext(Context)
 
     const authUser = auth.user
@@ -27,7 +27,6 @@ const Chat = observer (({author, ticketId, chatId}) => {
     
     useEffect(()=> {
       fetchMessages(ticketId).then( data => {
-        console.log(data)
         setMessages(data)
       })
     }, [])
@@ -35,10 +34,6 @@ const Chat = observer (({author, ticketId, chatId}) => {
     const [value, setValue] = useState([]);
     const handleChange = (e) => {
         setValue([e.target.value])
-    }
-
-    const handleSubmit = e => {
-
     }
     
     const onFinish = (values) => {
@@ -54,6 +49,12 @@ const Chat = observer (({author, ticketId, chatId}) => {
         }
         fetchMessages(ticketId).then( data => setMessages(data))
       })
+    }
+
+    const keyDownHandler = e => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+
+      }
     }
 
     const getMessage = (item) => {
@@ -83,7 +84,11 @@ const Chat = observer (({author, ticketId, chatId}) => {
     const Editor = ({ onChange, onSubmit, value }) => (
         <>
           <Form.Item name='body'>
-            <TextArea rows={4}/>
+            <TextArea rows={4} onKeyUp={e => {
+              if (e.key === "Enter" && e.ctrlKey) {
+
+              } 
+            }}/>
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" type="primary">
@@ -109,7 +114,10 @@ const Chat = observer (({author, ticketId, chatId}) => {
                 <Comment
                     avatar={<Avatar icon={<UserOutlined />} />}
                     content={
-                      <Form name='editor' onFinish={onFinish}>
+                      <Form 
+                          name='editor' 
+                          onFinish={onFinish} 
+                      >
                         <Editor />
                       </Form>
                       

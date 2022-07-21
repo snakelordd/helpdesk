@@ -9,20 +9,19 @@ const TicketCloseModal = ({show, onHide}) => {
 
   const {tickets, ticketProps} = useContext(Context)
 
-  const handleOk = () => {
-    console.log(tickets.selectedTicket)
-    updateTicket()
-  };
-
   const updateHandler = values => {
     const formData = new FormData()
     formData.append('statusId', values.status)
-    formData.append('message', values.body)
+    if (values.body) {
+      formData.append('message', values.body)
+    }
     formData.append('userId', user.user.id)
     
     // values.body && formData.append('body', values.body)
     updateTicket(tickets.selectedTicket.id, formData)
     console.log(values)
+    
+    onHide()
   }
   return (
 

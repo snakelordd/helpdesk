@@ -80,18 +80,23 @@ class UserController {
         return res.json({token})
     }
     async check(req, res, next) {
-
-        const user = await User.findOne( {where: {id: req.user.id}, attributes: ['id', 'email', 'role', 'avatar'] })
-        const token = await Token.findOne( 
-             {
-                 where: {userId: req.user.id}
-             } )
-          if (token?.refToken === req?.token) {
-             return res.json({token: token.refToken, user: user})
-          }
-          else {
-              return generateJwt(req.user.id, req.user.email, req.user.role)
-          }
+        try {
+            const user = await User.findOne( {where: {id: req.user.id}, attributes: ['id', 'email', 'role', 'avatar'] })
+            const token = await Token.findOne( 
+            {
+                where: {userId: req.user.id}
+            } )
+            if (token?.refToken === req?.token) {
+            return res.json({token: token.refToken, user: user})
+            }
+            else {
+                return generateJwt(req.user.id, req.user.email, req.user.role)
+            }
+        } 
+        catch (e) {
+            next(ApiError.internal(e.message))
+        }
+ 
         //  const token = generateJwt(req.user.id, req.user.email, req.user.role)
         //  return res.json({token})
     }

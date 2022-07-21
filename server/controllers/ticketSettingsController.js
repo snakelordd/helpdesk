@@ -44,20 +44,50 @@ class TicketSettingsController {
     }
 
     async updateSetting(req, res) {
-        let {id, name, option} = req.body
-        let setting
-        switch (option) {
-            case ('status'):
-                setting = await Status.update( {name}, { where: {id}} )
-                break
-            case ('priority'):
-                setting = await Priority.update( {name}, { where: {id}} )
-                break  
-            case ('category'):
-                setting = await Category.update( {name}, { where: {id}} )
-                break  
+        try {
+            let {id, name, option, isDelete, tag,  } = req.body
+            let setting
+
+            switch (option) {
+
+                case ('status'):
+                    if (isDelete === true) {
+                        await Ticket.update( { statusId: 1 }, { where: {statusId: id} } )
+                        setting = await Status.findOne({ where: { id },})
+                        if (setting) 
+                            await setting.destroy()
+
+                        return res.json(setting)
+                    }
+                    setting = await Status.update( {name}, { where: {id}} )
+
+                    if (tag) 
+                        setting = await Status.update( {tag}, { where: {id}} )
+
+                    break
+                case ('category'):
+                    if (isDelete === true) {
+                        try {
+                            await Category.create({id: 0, name: 'Без категории'})
+                        }
+                        catch {
+                            
+                        }
+                        await Ticket.update( { categoryId: 0 }, { where: {categoryId: id} } )
+                        setting = await Category.findOne({ where: { id },})
+                        if (setting) 
+                            await setting.destroy()
+                        
+                        return res.json(setting)
+                    }
+                    setting = await Category.update( {name}, { where: {id}} )
+                    break   
+            }
+            return res.json(setting)   
         }
-        return res.json(setting)   
+        catch (e) {
+            console.log(e.message)
+        }
     }
 
 
