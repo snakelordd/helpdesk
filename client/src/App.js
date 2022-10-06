@@ -13,7 +13,8 @@ import jwtDecode from 'jwt-decode';
 const App = () => {
   const {user} = useContext(Context)
   const [loading, setLoading] = useState(true)
- 
+  
+
   useEffect( () => {
       check().then( data => {
         if (localStorage.token === data.token) {
@@ -38,6 +39,7 @@ const App = () => {
   }
   return (
     <BrowserRouter>
+    
         {user.isAuth && <NavBar style={{position: 'relative'}}/>}
         <AppRouter />        
     </BrowserRouter>

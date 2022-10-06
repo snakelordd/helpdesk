@@ -1,4 +1,4 @@
-const {Ticket, Category, Status, Priority, Chat, Message, Attachment, Current, CurrentTicket} = require('../models/models')
+const {Ticket, Category, Status, Priority, Chat, Message, Attachment, Current, CurrentTicket, User} = require('../models/models')
 const ApiError = require('../error/ApiError')
 const uuid = require('uuid')
 const path = require('path')
@@ -88,8 +88,13 @@ class TicketController {
                     where: {
                         statusId: { [Op.ne]: closedId }, // проверка на закрытую заявку
                     }, 
-                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'isPriority'],
-                    include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name', 'tag']}],
+                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'isPriority',],
+                    include: [ 
+                        {model: Category, attributes: ['id','name']}, 
+                        {model: Status, attributes: ['id', 'name', 'tag']},
+                        {model: User, attributes: ['email']}
+
+                    ],
                     limit, 
                     offset
                 })
@@ -200,7 +205,10 @@ class TicketController {
                     chatId,
                     isLog: true
                 })
-                ticket = await Ticket.update( { categoryId }, { where: {id: ticketId} } )
+                await Ticket.update( { categoryId }, { where: {id: ticketId} } )
+                ticket = await Ticket.findOne( {
+                    where: {id: ticketId}
+                })
                 
             }        
         }

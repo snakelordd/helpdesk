@@ -5,7 +5,7 @@ const checkRole = require('../middleware/checkRoleMiddleWare')
 
 router.post('/add', checkRole('ADMIN'), ticketSettingsController.create)
 router.post('/', checkRole('ADMIN'), ticketSettingsController.updateSetting)
-router.get('/',  checkRole('ADMIN'), ticketSettingsController.getAll)
+router.get('/', ticketSettingsController.getAll)
 
 
 module.exports = router

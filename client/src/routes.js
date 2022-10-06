@@ -10,7 +10,7 @@ import Create from './pages/Create'
 import TicketPage from './pages/nested/TicketPage'
 
 import { MANUAL_ROUTE, CLOSED_TICKETS_ROUTE ,REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, TICKET_ROUTE, USERS_ROUTE, CURRENT_ROUTE, HOME_ROUTE, LOGIN_ROUTE, CREATE_ROUTE, CLOSED_ROUTE, PROFILE_ROUTE } from "./utils/consts"
-import Profile from './pages/Profile'
+import Profile from './pages/Profile/Profile'
 
 export const authRoutes = [
     {

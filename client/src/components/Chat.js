@@ -84,11 +84,7 @@ const Chat = observer (({author, ticketId, chatId, messages, setMessages}) => {
     const Editor = ({ onChange, onSubmit, value }) => (
         <>
           <Form.Item name='body'>
-            <TextArea rows={4} onKeyUp={e => {
-              if (e.key === "Enter" && e.ctrlKey) {
-
-              } 
-            }}/>
+            <TextArea rows={4} onPressEnter={onFinish} style={{resize: 'none'}}/>
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" type="primary">

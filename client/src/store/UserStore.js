@@ -4,6 +4,7 @@ export default class UserStore {
     constructor() {
         this._isAuth = false
         this._user = {}
+        this._allUsers = []
         
         makeAutoObservable(this)
     }
@@ -15,6 +16,10 @@ export default class UserStore {
         this._user = user
     }
 
+    setAllUsers(users) {
+        this._allUsers = users
+    }
+
     get isAuth() {
         return this._isAuth
     }
@@ -23,4 +28,8 @@ export default class UserStore {
         return this._user
     }
 
+    get allUsers() {
+        return this._allUsers
+    }
 }
+

@@ -73,6 +73,19 @@ const Tickets = observer ( () => {
                         title="Номер заявки" 
                         dataIndex="id" 
                         render={ (text, record) => (<a onClick={ ()=> navigate(TICKET_ROUTE + '/' + record.id)} >{text}</a>)}
+                        width={30}
+                    />
+                    <Column
+                      title="Автор"
+                      width={150}
+                      render={(text, record) => (
+                        // <Space size="middle">
+                        //     <a onClick={ () => setMyCurrent(text)}>Ввести</a>
+                        //     <a onClick={ () => setCurrent(text)}>Назначить</a>
+                        
+                        // </Space>
+                        <a>{text?.user?.email}</a>
+                      )}
                     />
                     <Column 
                         title="Тема заявки" 
@@ -91,31 +104,32 @@ const Tickets = observer ( () => {
                         render = {(text, record) => getFormatDate(record) }
                         defaultSortOrder = 'descend'
                         sorter = { (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt)}
-
+                        width={150}
                     />
 
                     <Column 
                         title="Статус" 
                         render={ (text, record) => <Tag color={text.status.tag}>{text.status.name}</Tag>}
                         sorter = {(a, b) => a.status.id - b.status.id}
-                    />
-
-                    <Column
-                      title="Действия"
-         
-                      render={(text, record) => (
-                        <Space size="middle">
-                            <a onClick={ () => setMyCurrent(text)}>Ввести</a>
-                            <a onClick={ () => setCurrent(text)}>Назначить</a>
-                          
-                        </Space>
-                      )}
+                        width={100}
                     />
                     <Column 
                         title="Приоритет" 
                         // dataIndex="priority"
                         render ={ (record) => getPriorityIcon(record)}
                         sorter = {(a, b) => a.isPriority - b.isPriority}
+                        width={20}
+                    />
+                    <Column
+                      title="Действия"
+                      render={(text, record) => (
+                         <Space size="middle">
+                             <a onClick={ () => setMyCurrent(text)}>Ввести</a>
+                             <a onClick={ () => setCurrent(text)}>Назначить</a>
+                                            
+                         </Space>
+
+                      )}
                     />
                 </Table>
                 <SetCurrentModal show={isModalVisible} onHide={onHide} />

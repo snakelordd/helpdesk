@@ -3,10 +3,10 @@ import { Context } from '..';
 import { Drawer, Menu, Avatar } from "antd"; //importing compnents from ant library
 import "../styles/Navbar.css"; //importing a css styling sheet
 import { HeaderSearch } from "./HeaderSearch";
-import {HomeOutlined, TagOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined, LogoutOutlined} from '@ant-design/icons'
+import {HomeOutlined, TeamOutlined, TagOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined, LogoutOutlined} from '@ant-design/icons'
 import {observer} from 'mobx-react-lite'
 import { useNavigate, Link, } from 'react-router-dom';
-import {CURRENT_ROUTE, CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, CLOSED_TICKETS_ROUTE } from '../utils/consts';
+import {CURRENT_ROUTE, CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, CLOSED_TICKETS_ROUTE, USERS_ROUTE } from '../utils/consts';
 
 const NavBar = observer ( () => {
     
@@ -74,7 +74,7 @@ const NavBar = observer ( () => {
                             <Link to={CURRENT_ROUTE}>Мои заявки</Link>
                         </Menu.Item>
                     </Menu.ItemGroup>
-                        { user.user.role === 'ADMIN' && 
+                        { (user.user.role === 'ADMIN' || user.user.role === 'CURATOR') && 
                         <Menu.ItemGroup title='Все заявки'>
                             <Menu.Item key='open' icon={<TagsOutlined />} onClick={drawerClosed}>
                                 <Link to={TICKETS_ROUTE}>Открытые заявки</Link>
@@ -85,17 +85,23 @@ const NavBar = observer ( () => {
                             </Menu.Item>
                         </Menu.ItemGroup>
                         }
-                    
-                    <Menu.ItemGroup title='Настройки' >
+                    <Menu.ItemGroup title='Пользователи' >
                         <Menu.Item key='profile' icon={<UserOutlined/>} onClick={drawerClosed}>
                             <Link to={PROFILE_ROUTE}>Мой профиль</Link> 
                         </Menu.Item>
-                        { user.user.role === 'ADMIN' &&
-                        <Menu.Item key='settings' icon={<SettingOutlined />} onClick={drawerClosed}>
-                            <Link to={SETTINGS_ROUTE}>Настройки</Link> 
+                        { (user.user.role === 'ADMIN' || user.user.role === 'CURATOR') &&
+                        <Menu.Item key='users' icon={<TeamOutlined />} onClick={drawerClosed}>
+                            <Link to={USERS_ROUTE}>Пользователи</Link> 
                         </Menu.Item>
                         }
                     </Menu.ItemGroup>
+                    {  user.user.role === 'ADMIN' &&
+                    <Menu.ItemGroup title='Настройки' >
+                        <Menu.Item key='settings' icon={<SettingOutlined />} onClick={drawerClosed}>
+                            <Link to={SETTINGS_ROUTE}>Настройки</Link> 
+                        </Menu.Item>
+                    </Menu.ItemGroup>
+                    }
                 </Menu>
                 <Menu >
                     <Menu.ItemGroup >    

@@ -18,10 +18,10 @@ const TicketCloseModal = ({show, onHide}) => {
     formData.append('userId', user.user.id)
     
     // values.body && formData.append('body', values.body)
-    updateTicket(tickets.selectedTicket.id, formData)
+    updateTicket(tickets.selectedTicket.id, formData).then(() => {
+      onHide()
+    })
     console.log(values)
-    
-    onHide()
   }
   return (
 

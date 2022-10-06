@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { PageHeader, Button, Descriptions, Tag, Divider, Space } from 'antd';
+import { PageHeader, Button, Descriptions, Tag, Divider, Space, Form, Input, Select } from 'antd';
 import { Context } from '../..';
 import { getFormatDate, getStatusTag,  } from '../CommonFunctions';
 import Chat from '../../components/Chat';
@@ -8,31 +8,42 @@ import { observer } from 'mobx-react-lite';
 import SetCurrentModal from '../../components/modals.js/SetCurrentModal';
 import TicketCloseModal from '../../components/modals.js/TicketCloseModal';
 import { useParams } from 'react-router-dom';
-import { fetchOneTicket } from '../../http/ticketAPI';
+import { fetchOneTicket, updateTicket } from '../../http/ticketAPI';
 import { fetchOneUser } from '../../http/userAPI';
 import { fetchMessages } from '../../http/chatAPI';
+import FormItem from 'antd/lib/form/FormItem';
+import { fetchProps } from '../../http/ticketPropsAPI';
+
 
 
 const TicketPage = () => {
-
+  const {Option} = Select
+  
   const [ticket, setTicket] = useState()
+
   const {id} = useParams({})
   const [author, setAuthor] = useState()
   const [messages, setMessages] = useState()
+  const [hiddenForm, setHiddenForm] = useState(true)
+  const {tickets, ticketProps, user} = useContext(Context)
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCloseModalVisible, setIsCloseModalVisible] = useState(false);
+  const [categories, setCategories] = useState([])
+  const [isOpenDropdown, setIsOpenDropdawn] = useState(false)
+  
+  
 
-  console.log(ticket)
   useEffect(()=> {
     fetchOneTicket(id).then(data => { 
       setTicket(data.ticket)
       fetchOneUser(data.ticket.userId).then( data2 => {setAuthor(data2)})
     })
-  }, [])
+    fetchProps('category').then( data => {
+      setCategories(data.data)
+      
+    })
+  }, [messages])
 
-  const {tickets, ticketProps, user} = useContext(Context)
-  
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isCloseModalVisible, setIsCloseModalVisible] = useState(false);
-  
   const setCurrent = (ticket) => {
       tickets.setSelectedTicket(ticket)
       setIsModalVisible(true)
@@ -45,9 +56,36 @@ const TicketPage = () => {
   }
 
   const setIsPriority = () => {
+    const formData = new FormData
 
+    formData.append('isPriority', !ticket.isPriority)
+
+    updateTicket(ticket.id, formData).then( data => {
+      fetchOneTicket(id).then( data=> {
+        setTicket(data.ticket)
+      })
+      fetchMessages(ticket.id).then(data => {
+        setMessages(data)
+      })
+    })
   }
 
+  const updateCategory = values => {
+    setHiddenForm(true)
+    setIsOpenDropdawn(false)
+    const formData = new FormData
+    formData.append('categoryId', values)
+    updateTicket(id, formData).then( data => {
+      fetchOneTicket(id).then(data => { 
+        setTicket(data.ticket)
+      })
+      }) 
+    }
+
+  const isVisiblePopup =() => {
+    setHiddenForm(!hiddenForm)
+    setIsOpenDropdawn(hiddenForm)
+  }
   const onHide = () => {
     fetchMessages(ticket?.id).then( data => {
       setMessages(data)
@@ -64,20 +102,38 @@ const TicketPage = () => {
   }
   return (
       <div className="pageprops" >
-           <div className='header pageWidth' style={{marginTop: '1%', height: '12%'}}>
+           <div className='header pageWidth' style={{marginTop: '1%', height: '12%'}} >
               { ticket &&
                 <PageHeader
                 ghost={false}
                 onBack={() => window.history.back()}
                 title={ticket.title}
                 subTitle={<Space size={10}>{ticket.isPriority && <ArrowUpOutlined style={{color: 'red'}}/>}<Tag color={ticket.status.tag}>{ticket.status.name}</Tag></Space> }
+                
               >    
                 {
                   author &&
-                  <Descriptions size="small" column={3}>
+                  <Descriptions size="small" column={3} >
                   <Descriptions.Item label="Создан"><a>{getFormatDate(ticket)}</a></Descriptions.Item>
-                  <Descriptions.Item label="Категория">
-                    <a>{ticket.category.name}</a>
+                  <Descriptions.Item label="Категория" >
+                    <Form name='categoryUpdate' style={{margin: 0}}>
+                      {hiddenForm &&  <a onClick={isVisiblePopup }>{ticket.category.name}</a>}
+                      <FormItem name='category' style={{width: '200px', height: '0px'}} hidden={hiddenForm} >
+                        <Select size='small' 
+                            autoFocus={true} 
+                            value={ticket.category.name} 
+                            placeholder={ticket.category.name} 
+                            onSelect={updateCategory} 
+                            open={isOpenDropdown}
+                            onClick={() => setIsOpenDropdawn(!isOpenDropdown)}
+                        >
+                          {categories.map(item => {
+                            return <Option value={item.id} key={item.id}>{item.name}</Option>
+                          })}
+                        </Select>
+                      </FormItem>
+                    </Form>
+                    
                   </Descriptions.Item>
                    {author.hasOwnProperty('user_info') ?   
                    <Descriptions.Item label="Автор"><a>{
@@ -115,7 +171,7 @@ const TicketPage = () => {
                         !ticket.isPriority ? 
                         <Space size={10}><ArrowUpOutlined  style={{color: 'red'}}/><a onClick={() => setIsPriority()}>Повысить приоритет</a></Space>
                         :
-                        <Space><ArrowDownOutlined  style={{color: 'red'}}/><a>Понизить приоритет</a></Space>
+                        <Space><ArrowDownOutlined  style={{color: 'red'}}/><a onClick={() => setIsPriority()} >Понизить приоритет</a></Space>
                       }                  
                     <Space size={10}><UserOutlined/><a onClick={ () => setCurrent(ticket)}>Назначить исполнителя</a></Space>
                     <Space size={10}><CheckOutlined  style={{color: 'green'}}/><a onClick={() => ticketClose(ticket)}>Изменить статус заявки</a> </Space>

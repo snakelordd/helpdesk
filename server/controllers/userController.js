@@ -37,27 +37,6 @@ class UserController {
         return res.json({token})
     }
 
-    async setInfo(req, res, next) {
-        try {
-            const {name, address, organization, department, userId, fedPhone, cityPhone} = req.body
-            const userInfo = await UserInfo.create(
-                {
-                    name, 
-                    address,  
-                    organization,  
-                    department,
-                    userId: userId,
-                    fedPhone,
-                    cityPhone
-                }) 
-
-          return res.json(userInfo)
-         }
-         catch (e) {
-             next(ApiError.internal(e.message))
-         }     
-    }
-
     async login(req, res, next) {
         const {email, password} = req.body
         const user = await User.findOne( {where: {email}} )
@@ -79,6 +58,66 @@ class UserController {
 
         return res.json({token})
     }
+
+    async updateUser(req, res, next) {
+        try {
+            const {userId, oldPassword, newPassword, role, } = req.body
+
+            let user = await User.findOne( {where: {id: userId}})
+
+            if (!user) {
+                return next(ApiError.internal('Ошибка'))
+            }
+            if (newPassword) {
+                if (user.role != 'ADMIN') {
+                    let comparePassword = bcrypt.compareSync(oldPassword, user.password)
+                    if (!comparePassword) {
+                        return next(ApiError.internal('Неправильный пароль'))
+                    }
+                }
+
+                const hashPassword = await bcrypt.hash(newPassword, 5)
+                user = await User.update({password: hashPassword}, {where: {id: userId}})
+            }
+
+            if (role) {
+                user = await User.update({role}, {where: {id: userId}})
+            }
+            return res.json(user)
+        }
+        catch (e) {
+            next(ApiError.internal(e.message))
+        }    
+    }
+    async setInfo(req, res, next) {
+        try {
+            const {name, address, organization, department, userId, fedPhone, cityPhone, isUpdate} = req.body
+            
+            let userInfo = await UserInfo.findOne({where: {userId}})
+
+            if (isUpdate === 'true' && userInfo) {
+                userInfo = await UserInfo.update( { name, address, organization, department, fedPhone, cityPhone }, { where: {userId: userId} } )
+            }
+            else {
+                userInfo = await UserInfo.create(
+                    {
+                        name, 
+                        address,  
+                        organization,  
+                        department,
+                        userId: userId,
+                        fedPhone,
+                        cityPhone
+                    }
+                ) 
+            }
+            return res.json(userInfo)
+            }
+            catch (e) {
+             next(ApiError.internal(e.message))
+        }     
+    }
+    
     async check(req, res, next) {
         try {
             const user = await User.findOne( {where: {id: req.user.id}, attributes: ['id', 'email', 'role', 'avatar'] })
@@ -103,12 +142,15 @@ class UserController {
     
     async getAllUsers(req, res) {
         let {role} = req.query
-        role = role.toUpperCase()
+        // role = role.toUpperCase()
         let users
         console.log(role)
         if (!role) {
             users = await User.findAll(
-
+                {
+                    attributes: ['id', 'email', 'role', 'avatar'],
+                    include: [ { model: UserInfo, attributes: ['name', 'address', 'organization', 'department', 'cityPhone', 'fedPhone']} ] 
+                }
             )
         } 
         if (role) {
@@ -122,10 +164,11 @@ class UserController {
         }
         return res.json(users)
     }
-    async getOneUser(req, res) {
-        const{id} = req.params
+    async getOneUser(req, res, next) {
+        try {
+            const{id} = req.params
         
-        const user = await User.findOne(
+            const user = await User.findOne(
                 {
                     where: {id},
                     attributes: ['id', 'email', 'role', 'avatar'],
@@ -134,6 +177,11 @@ class UserController {
             
             ) 
         return res.json(user)
+        }
+        catch (e) {
+            next(ApiError.internal(e.message))
+        }
+        
     }
 }
 

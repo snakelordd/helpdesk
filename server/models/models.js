@@ -101,6 +101,8 @@ Ticket.belongsTo(Category)
 Status.hasMany(Ticket)
 Ticket.belongsTo(Status)
 
+User.hasMany(Ticket)
+Ticket.belongsTo(User)
 
 
 module.exports = {
