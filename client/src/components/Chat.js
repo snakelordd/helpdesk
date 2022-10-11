@@ -59,7 +59,7 @@ const Chat = observer (({author, ticketId, chatId, messages, setMessages}) => {
 
     const getMessage = (item) => {
         if (item.isLog) {
-            return <li><p style={{textAlign: 'center', paddingTop: '20px'}}><Divider>{item.body}</Divider></p></li>
+            return <li><Divider style={{paddingTop: '20px'}}>{item.body}</Divider></li>
         }
         let user;
         fetchOneUser(item.userId).then( data => {
@@ -75,7 +75,6 @@ const Chat = observer (({author, ticketId, chatId, messages, setMessages}) => {
                 style={{width: '70%', marginLeft: '5%', }}
             
               />
-              
               <Divider />
             </li>
           
@@ -83,8 +82,9 @@ const Chat = observer (({author, ticketId, chatId, messages, setMessages}) => {
 
     const Editor = ({ onChange, onSubmit, value }) => (
         <>
+          
           <Form.Item name='body'>
-            <TextArea rows={4} onPressEnter={onFinish} style={{resize: 'none'}}/>
+            <TextArea rows={2} onPressEnter={onFinish} style={{resize: 'none'}}/>
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" type="primary">

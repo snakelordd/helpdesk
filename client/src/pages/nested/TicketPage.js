@@ -7,12 +7,13 @@ import { LineOutlined, ArrowUpOutlined, ArrowDownOutlined, UserOutlined, CheckOu
 import { observer } from 'mobx-react-lite';
 import SetCurrentModal from '../../components/modals.js/SetCurrentModal';
 import TicketCloseModal from '../../components/modals.js/TicketCloseModal';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchOneTicket, updateTicket } from '../../http/ticketAPI';
 import { fetchOneUser } from '../../http/userAPI';
 import { fetchMessages } from '../../http/chatAPI';
 import FormItem from 'antd/lib/form/FormItem';
 import { fetchProps } from '../../http/ticketPropsAPI';
+import { PROFILE_ROUTE } from '../../utils/consts';
 
 
 
@@ -31,7 +32,7 @@ const TicketPage = () => {
   const [categories, setCategories] = useState([])
   const [isOpenDropdown, setIsOpenDropdawn] = useState(false)
   
-  
+  const navigate = useNavigate()
 
   useEffect(()=> {
     fetchOneTicket(id).then(data => { 
@@ -136,7 +137,7 @@ const TicketPage = () => {
                     
                   </Descriptions.Item>
                    {author.hasOwnProperty('user_info') ?   
-                   <Descriptions.Item label="Автор"><a>{
+                   <Descriptions.Item label="Автор"><a onClick={() => navigate(PROFILE_ROUTE + `/${author.id}`)}>{
                       author.user_info ? author.user_info.name : author.email
                     }</a></Descriptions.Item>
                   :

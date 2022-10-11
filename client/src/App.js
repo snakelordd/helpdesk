@@ -14,18 +14,21 @@ const App = () => {
   const {user} = useContext(Context)
   const [loading, setLoading] = useState(true)
   
-
+  // localStorage.clear()
   useEffect( () => {
       check().then( data => {
         if (localStorage.token === data.token) {
             fetchOneUser(data.user.id).then(data => {user.setUser(data)} )
             // user.setUser(data.user)
-            user.setIsAuth(true)
+            
         }
         else {
           localStorage.removeItem('token')
         }
-      }).finally( ()=> setLoading(false))
+      }).finally( ()=> {
+          setLoading(false)
+          user.setIsAuth(true)
+      })
     
 
   }, [])

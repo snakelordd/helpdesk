@@ -51,15 +51,20 @@ const CreateUser = ({showCreateTool, setShowCreateTool, reFetchUsers}) => {
             createUser(registrationFormData).then( data => {
                 userInfoFormData.append('userId', data.id)
                 addUserInfo(userInfoFormData)
+            }).finally(() => {
+                closeCreateTool()
+                setTimeout(() => message.success({ content: 'Успешно!', key: 'message', duration: 2, style: {marginTop: '45vh',} }), 200);
+                reFetchUsers()
+                
             })
 
-            setTimeout(() => { message.success({ content: 'Успешно!', key: 'message', duration: 2, 
-              style: {
-                marginTop: '45vh',
-              } });
-            }, 200);
-            reFetchUsers()
-            closeCreateTool()
+            // setTimeout(() => { message.success({ content: 'Успешно!', key: 'message', duration: 2, 
+            //   style: {
+            //     marginTop: '45vh',
+            //   } });
+            // }, 200);
+            // reFetchUsers()
+            // closeCreateTool()
             
         }
 

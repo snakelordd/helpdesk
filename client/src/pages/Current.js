@@ -18,21 +18,22 @@ const { Column, ColumnGroup } = Table;
 
 const Current = () => {
     const {tickets, ticketProps, user} = useContext(Context)
+    
     const [myCurrent, setMyCurrent] = useState()
 
-
     useEffect( () => {
-        fetchTickets().then( data => {
-            console.log(data)
-            tickets.setTickets(data.rows)})
-    
+        fetchCurrent(user.user.id).then( data => {
+            setMyCurrent(data) 
+        })
     
     fetchProps('category').then( data => ticketProps.setCategories(data.data))
     fetchProps('status').then( data => ticketProps.setStatuses(data.data))
-    }, [])
+    }, [user])
 
     const navigate = useNavigate()
+
     tickets.tickets.map(i => i['key'] = i.id)
+
     const { RangePicker } = DatePicker;
 
     const { Search } = Input;
@@ -67,39 +68,40 @@ const Current = () => {
             </PageHeader>
             <div className='pageWidth' style={{ marginTop: '1%', }}>
                 <Table 
-                    dataSource={tickets.tickets} 
+                    dataSource={myCurrent} 
                     sortDirections= {['ascend', 'descend', 'ascend']} 
                     
                 >
                     <Column 
                         title="Номер заявки" 
                         dataIndex="id" 
-                        render={ (text, record) => (<a onClick={ ()=> navigate(TICKETS_ROUTE + '/' + record.id)} >{text}</a>)}
+                        
+                        render={ (text, record) => (<a onClick={ ()=> { navigate(TICKETS_ROUTE + '/' + record.ticket.id)}} >{record.ticket.id}</a>)}
                     />
                     <Column 
                         title="Тема заявки" 
                         dataIndex="title" 
-                        render={ (text, record) => (<div style={{cursor: 'pointer'}} onClick={ ()=> navigate(TICKETS_ROUTE + '/' + record.id)} >{text}</div>)}
+                        render={ (text, record) => (<div style={{cursor: 'pointer'}} onClick={ ()=> navigate(TICKETS_ROUTE + '/' + record.ticket.id)} >{record.ticket.title}</div>)}
                     />
                     <Column 
                         title="Категория" 
                         dataIndex={"category"} 
-                        render={ (text, record) => <span>{record.category?.name}</span>}
-                        sorter = {(a, b) => a.category.id - b.category.id}
+                        render={ (text, record) => <span>{record.ticket.category?.name}</span>}
+                        sorter = {(a, b) => a.ticket.category.id - b.ticket.category.id}
                     />
                     <Column 
                         title="Создан" 
-                        render = {(text, record) => getFormatDate(record) }
+                        render = {(text, record) => getFormatDate(record.ticket) }
                         defaultSortOrder = 'descend'
-                        sorter = { (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt)}
+                        sorter = { (a, b) => Date.parse(a.ticket.createdAt) - Date.parse(b.ticket.createdAt)}
 
                     />
 
                     <Column 
                         title="Статус" 
-                        render={ (text, record) => <Tag color={getStatusTag(record, ticketProps)}>{text.status.name}</Tag>}
+                        render={ (text, record) => <Tag color={record.ticket.status.tag}>{text.ticket.status.name}</Tag>}
                             // getStatusTag(record)}
-                        sorter = {(a, b) => a.status.id - b.status.id}
+                        sorter = {(a, b) => a.ticket.status.id - b.ticket.status.id}
                     />
 
                     {/* <Column
@@ -115,8 +117,8 @@ const Current = () => {
                     <Column 
                         title="Приоритет" 
                         // dataIndex="priority" 
-                        render ={ (record) => getPriorityIcon(record)}
-                        sorter = {(a, b) => a.isPriority - b.isPriority}
+                        render ={ (record) => getPriorityIcon(record.ticket)}
+                        sorter = {(a, b) => a.ticket.isPriority - b.isPriority}
                     />
                 </Table>
                 <SetCurrentModal show={isModalVisible} onHide={ () => setIsModalVisible(false)} />

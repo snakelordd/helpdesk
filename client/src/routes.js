@@ -50,7 +50,7 @@ export const authRoutes = [
         Component: <Users />
     },
     {
-        path: PROFILE_ROUTE,
+        path: PROFILE_ROUTE + '/:userId',
         Component: <Profile />
     },
     {

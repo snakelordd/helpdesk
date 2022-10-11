@@ -65,13 +65,13 @@ const Token = sequelize.define('token', {
     refToken: {type: DataTypes.STRING, allowNull: false}
 })
 
-User.hasOne(UserInfo)
+User.hasOne(UserInfo, {onDelete: 'CASCADE'})
 UserInfo.belongsTo(User)
 
-User.hasOne(Current)
+User.hasOne(Current, {onDelete: 'CASCADE'})
  Current.belongsTo(User)
 
-User.hasOne(Token)
+User.hasOne(Token, {onDelete: 'CASCADE'})
 Token.belongsTo(User)
 
 Current.hasMany(CurrentTicket)

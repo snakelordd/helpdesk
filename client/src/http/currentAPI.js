@@ -1,12 +1,11 @@
 import {$authHost, $host} from './index'
 
-export const addToCurrent = async (ticket) => {
-    const {data} = await $authHost.post('api/tickets/create', ticket)
+export const setCurrent = async (formData) => {
+    const {data} = await $authHost.post('api/current/', formData)
     return data
 }
 
-export const fetchCurrent = async () => {
-    const {url} = 'api/tickets/all/?option=open'
-    const {data}  = await $authHost.get('api/tickets/all/?option=open')
+export const fetchCurrent = async (userId) => {
+    const {data}  = await $authHost.get('api/current/', { params: { userId: userId }})
     return data
 }

@@ -1,8 +1,9 @@
-import { Button, Card, Col, Form, Input, Menu, Modal, Row, Select, Space } from 'antd';
-import {UserOutlined, LockOutlined, AppstoreOutlined, MailOutlined, SettingOutlined  } from '@ant-design/icons';
+import { Button, Col, Menu, Modal, Row, Select, Space } from 'antd';
+import {UserOutlined, LockOutlined, ToolOutlined  } from '@ant-design/icons';
 import React, { useState } from 'react';
 import UserInfo from './UserSettings/UserInfo';
 import SecurityAndRoles from './UserSettings/SecurityAndRoles';
+import ProfileManagment from './UserSettings/ProfileManagment';
   
 
 const UserSettings = ({show, onHide, user, isUpdate}) => {
@@ -18,7 +19,8 @@ const UserSettings = ({show, onHide, user, isUpdate}) => {
             <Button onClick={onHide} key={Math.random()}>
                 Закрыть
             </Button>, 
-        ]} 
+            ]} 
+            
         > 
             <Menu
                 defaultSelectedKeys={['userInfo']}
@@ -26,11 +28,13 @@ const UserSettings = ({show, onHide, user, isUpdate}) => {
             >
                 <Menu.Item key='userInfo' icon={<UserOutlined />} onClick={() => setMenuItem('userInfo')}> Персональное </Menu.Item>
                 <Menu.Item key='userSecurity' icon={<LockOutlined />} onClick={() => setMenuItem('userSecurity')}> Безопасность и роли </Menu.Item>
+                <Menu.Item key='profileManagment' icon={<ToolOutlined />} onClick={() => setMenuItem('profileManagment')} >Управление профилем</Menu.Item>
             </Menu>
             <Row justify="center" style={{marginTop: '2%'}}>
                 <Col span={22}>
                     {menuItem === 'userInfo' && <UserInfo user={user} isUpdate={isUpdate}/>}
                     {menuItem === 'userSecurity' &&<SecurityAndRoles user={user}/>}
+                    {menuItem === 'profileManagment' && <ProfileManagment  userProfile={user} onHide={onHide}/>}
                 </Col>
             </Row>            
         </Modal>

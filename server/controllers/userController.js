@@ -59,6 +59,18 @@ class UserController {
         return res.json({token})
     }
 
+    async deleteUser(req, res, next) {
+        try {
+            const {userId} = req.query
+
+            const user = await User.destroy({where: {id: userId}})
+            return res.json(user)
+        }
+        catch (e) {
+            next(ApiError.internal(e.message))
+        }    
+    }
+
     async updateUser(req, res, next) {
         try {
             const {userId, oldPassword, newPassword, role, } = req.body

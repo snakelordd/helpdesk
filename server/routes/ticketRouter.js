@@ -8,7 +8,6 @@ router.post('/create', ticketController.create)
 router.post('/', checkRole('ADMIN') , ticketController.updateTicket)
 router.post('/:id', checkRole('ADMIN'), ticketController.updateTicket)
 router.get('/all', checkRole('ADMIN', 'CURATOR'), ticketController.getAll)
-router.get('/',  ticketController.getMy)
 router.get('/:id',  ticketController.getOne)
 
 

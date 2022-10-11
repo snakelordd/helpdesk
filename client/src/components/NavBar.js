@@ -77,17 +77,17 @@ const NavBar = observer ( () => {
                         { (user.user.role === 'ADMIN' || user.user.role === 'CURATOR') && 
                         <Menu.ItemGroup title='Все заявки'>
                             <Menu.Item key='open' icon={<TagsOutlined />} onClick={drawerClosed}>
-                                <Link to={TICKETS_ROUTE}>Открытые заявки</Link>
+                                <Link to={TICKETS_ROUTE + '?option=open'}>Открытые заявки</Link>
                             </Menu.Item>
 
                             <Menu.Item key='closed' icon={<LockOutlined />} onClick={drawerClosed}>
-                                <Link to={CLOSED_TICKETS_ROUTE}>Закрытые заявки</Link>
+                                <Link to={CLOSED_TICKETS_ROUTE + '?option=closed'}>Закрытые заявки</Link>
                             </Menu.Item>
                         </Menu.ItemGroup>
                         }
                     <Menu.ItemGroup title='Пользователи' >
                         <Menu.Item key='profile' icon={<UserOutlined/>} onClick={drawerClosed}>
-                            <Link to={PROFILE_ROUTE}>Мой профиль</Link> 
+                            <Link to={PROFILE_ROUTE + `/${user.user.id}`}>Мой профиль</Link> 
                         </Menu.Item>
                         { (user.user.role === 'ADMIN' || user.user.role === 'CURATOR') &&
                         <Menu.Item key='users' icon={<TeamOutlined />} onClick={drawerClosed}>

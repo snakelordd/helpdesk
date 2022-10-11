@@ -7,6 +7,7 @@ const ApplyUser = ({registrationData, userInfoData}) => {
     const user = {user_info: ''}
     user.user_info = userInfoData
 
+    
     return (
         <Card bordered={false} >
             {registrationData && userInfoData ? 

@@ -12,10 +12,10 @@ import UserSettings from '../../components/modals.js/UserSettings';
 
 const Profile = () => {
 
-    const params = useParams()
+    const {userId} = useParams({})
     const {user} = useContext(Context)
     const [profile, setProfile] = useState('')
-
+    
     
     const [showEditForm, setShowEditForm] = useState(false)
     const [isUpdate, setIsUpdate] = useState(true)
@@ -31,7 +31,7 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        fetchOneUser(user.user.id).then(data => setProfile(data))
+        fetchOneUser(userId).then(data => setProfile(data))
     }, [showEditForm])
     
     return (
@@ -40,7 +40,7 @@ const Profile = () => {
                 <PageHeader
                   ghost={false}
                   onBack={() => window.history.back()}
-                  title="Мой профиль"
+                  title={user.user.id === userId ? 'Мой профиль' : profile.user_info?.name || profile.email}
                   extra={[
                   ]}
                 >
@@ -50,7 +50,7 @@ const Profile = () => {
                     <Card 
                         key='profileHeader'
                         bordered={false} 
-                        extra={<a key="edit" onClick={openSettings} style={{paddingRight: 50}}><Space><SettingOutlined /> Настройки </Space></a>}
+                        extra={user.user.role === 'ADMIN' && <a key="edit" onClick={openSettings} style={{paddingRight: 50}}><Space><SettingOutlined /> Настройки </Space></a>}
                         headStyle={{paddingTop: 20}}
                         title = {
                             <Card.Meta

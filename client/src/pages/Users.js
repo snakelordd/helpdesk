@@ -7,14 +7,19 @@ import { fetchAllUsers } from '../http/userAPI';
 import UserInfoModal from '../components/modals.js/UserInfoModal';
 import UserSettings from '../components/modals.js/UserSettings';
 import CreateUser from '../components/modals.js/CreateUser/CreateUser';
+import { PROFILE_ROUTE } from '../utils/consts';
+import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
+
   
   const {user} = useContext(Context)
   const [users, setUsers] = useState([])
   const [showEditForm, setShowEditForm] = useState(false)
   const [showCreateTool, setShowCreateTool] = useState(false)
   const [userItem, setUserItem] = useState('')
+
+  const navigate = useNavigate()
 
   useEffect( () => {
     fetchAllUsers().then((data) => {
@@ -59,6 +64,8 @@ const Users = () => {
   const reFetchUsers = () => {
     setShowEditForm(!showEditForm)
   }
+
+
   return (
     <div className='pageprops'>
       <div className='header pageWidth' style={{marginTop: '1%', height: '8%'}}>
@@ -105,7 +112,7 @@ const Users = () => {
                   avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                   title={
                     
-                      <a href="">{item.user_info?.name || item.email}</a>
+                      <a onClick={ ()=> navigate(PROFILE_ROUTE + `/${item.id}`)} >{item.user_info?.name || item.email}</a>
                   }
                   description={
                     <Space size='large'>

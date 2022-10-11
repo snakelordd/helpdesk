@@ -67,3 +67,7 @@
     border-radius: 20px;
     background-color: white;
 }
+
+.settingsCard {
+    height: 500px;
+}

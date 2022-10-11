@@ -5,6 +5,7 @@ const router = new Router()
 
 
 
-router.get('/:currentId', currentController.getMyCurrent)
+router.get('/', currentController.getMyCurrent)
+router.post('/', currentController.setCurrent)
 
 module.exports = router

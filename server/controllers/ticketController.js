@@ -3,6 +3,7 @@ const ApiError = require('../error/ApiError')
 const uuid = require('uuid')
 const path = require('path')
 const { Op } = require('sequelize')
+const sequelize = require('sequelize')
 const closedId = process.env.CLOSED_ID
 
 class TicketController {
@@ -75,25 +76,58 @@ class TicketController {
     }
 
     async getAll(req, res) {
-        let {option, limit, page} = req.query
+        let {option, limit, page, fromDate, toDate} = req.query
         let tickets
         page = page || 1
         limit = limit || 15
         let offset = page * limit - limit
         
-
+        if (fromDate && toDate) {
+            tickets = await Ticket.findAll(
+                {
+                    where: {
+                        [Op.and]: [
+                            sequelize.where(sequelize.fn('date', sequelize.col('ticket.createdAt')), '>=', fromDate),
+                            sequelize.where(sequelize.fn('date', sequelize.col('ticket.createdAt')), '<=', toDate),
+                        ]
+                    },
+                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'userId', 'isPriority',],
+                    include: [ 
+                        {model: Category, attributes: ['id','name']}, 
+                        {model: Status, attributes: ['id', 'name', 'tag']},
+                        {model: User, attributes: ['email']}
+                    ],
+                    limit, 
+                    offset
+            })
+            
+            return res.json(tickets)
+        }
+        if (option === 'all') {
+            tickets = await Ticket.findAndCountAll(
+                {
+                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'userId', 'isPriority',],
+                    include: [ 
+                        {model: Category, attributes: ['id','name']}, 
+                        {model: Status, attributes: ['id', 'name', 'tag']},
+                        {model: User, attributes: ['email']}
+                    ],
+                    limit, 
+                    offset
+                })
+            }
+        
         if (option === 'open') {
             tickets = await Ticket.findAndCountAll(
                 {
                     where: {
                         statusId: { [Op.ne]: closedId }, // проверка на закрытую заявку
                     }, 
-                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'isPriority',],
+                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'userId', 'isPriority',],
                     include: [ 
                         {model: Category, attributes: ['id','name']}, 
                         {model: Status, attributes: ['id', 'name', 'tag']},
                         {model: User, attributes: ['email']}
-
                     ],
                     limit, 
                     offset
@@ -105,8 +139,12 @@ class TicketController {
                     where: {
                         statusId: closedId // проверка на закрытую заявку
                     }, 
-                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'isPriority'],
-                    include: [ {model: Category, attributes: ['id','name']}, {model: Status, attributes: ['id', 'name', 'tag']}],
+                    attributes: ['id', 'title', 'createdAt', 'updatedAt', 'chatId', 'userId', 'isPriority'],
+                    include: [ 
+                        {model: Category, attributes: ['id','name']}, 
+                        {model: Status, attributes: ['id', 'name', 'tag']},
+                        {model: User, attributes: ['email']}
+                    ],
                     limit, 
                     offset
                 })
@@ -114,37 +152,6 @@ class TicketController {
         return res.json(tickets)
     }
 
-    async getMy(req, res) {
-        let {option, limit, page, userId} = req.query
-        let tickets
-        page = page || 1
-        limit = limit || 15
-        let offset = page * limit - limit
-        
-
-        if (option === 'open') {
-            tickets = await Ticket.findAndCountAll(
-                {
-                    where: {
-                        userId,
-                        statusId: { [Op.ne]: 2 } // проверка на закрытую заявку
-                    }, 
-                    limit, 
-                    offset
-                })
-        } 
-        if (option === 'closed') {
-            tickets = await Ticket.findAndCountAll(
-                {
-
-                    where: { statusId: 2 } ,
-                    userId,
-                    limit, 
-                    offset
-                })
-        }
-        return res.json(tickets)
-    }
 
     async getOne(req, res) {
         const {id} = req.params

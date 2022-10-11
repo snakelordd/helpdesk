@@ -41,7 +41,7 @@ const SecurityAndRoles = ({user}) => {
     }
 
     return (
-        <Card size='small' bordered={false}  >
+        <Card size='small' bordered={false} className='settingsCard'>
             <Card  size='small' bordered={false}  title={<Space><LockOutlined />Изменение пароля</Space>}>
                 <Form labelCol={{span: 5 }} wrapperCol={{ span: 8,}} onFinish={confirmChangePassword}>
                     <Form.Item label='Новый пароль' name={'password'} 

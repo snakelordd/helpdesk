@@ -45,7 +45,7 @@ const UserInfo = ({user, isUpdate}) => {
     }
 
     return (
-        <Card size='small' bordered={false}  title={<Space><InfoCircleOutlined />Информация о пользователе</Space>} >
+        <Card className='settingsCard' size='small' bordered={false}  title={<Space><InfoCircleOutlined />Информация о пользователе</Space>} >
             <Form name='userInfo' onFinish={confirm} labelAlign='left' labelCol={{span: 6,  }} >
                 <br></br>
                 <Form.Item label={<Space><UserOutlined />Имя</Space>} name={'name'} initialValue={user?.user_info?.name}>

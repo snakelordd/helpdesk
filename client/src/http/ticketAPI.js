@@ -5,13 +5,21 @@ export const createTicket = async (ticket) => {
     return data
 }
 
-export const fetchTickets = async () => {
+export const fetchTickets = async (all = false, fromDate, toDate) => {
+    if (fromDate && toDate) {
+        const {data}  = await $authHost.get('api/tickets/all/?option=all',  { params: { fromDate: fromDate, toDate: toDate }})
+        return data
+    }
+    if (all === true) {
+        const {data}  = await $authHost.get('api/tickets/all/?option=all')
+        return data
+    }
     const {data}  = await $authHost.get('api/tickets/all/?option=open')
     return data
 }
 
 export const fetchClosedTickets = async () => {
-    const {data}  = await $authHost.get('api/tickets/?option=closed')
+    const {data}  = await $authHost.get('api/tickets/all/?option=closed')
     return data
 }
 
