@@ -6,7 +6,7 @@ import { HeaderSearch } from "./HeaderSearch";
 import {HomeOutlined, TeamOutlined, TagOutlined, FileSearchOutlined, PlusCircleOutlined, UserOutlined, TagsOutlined, LockOutlined, SettingOutlined, LogoutOutlined} from '@ant-design/icons'
 import {observer} from 'mobx-react-lite'
 import { useNavigate, Link, } from 'react-router-dom';
-import {CURRENT_ROUTE, CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, CLOSED_TICKETS_ROUTE, USERS_ROUTE } from '../utils/consts';
+import {CURRENT_ROUTE, CLOSED_ROUTE, CREATE_ROUTE, HOME_ROUTE, MANUAL_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE, SETTINGS_ROUTE, TICKETS_ROUTE, CLOSED_TICKETS_ROUTE, USERS_ROUTE, LOGIN_ROUTE } from '../utils/consts';
 
 const NavBar = observer ( () => {
     
@@ -25,6 +25,8 @@ const NavBar = observer ( () => {
     const logout = () => {
         user.setIsAuth(false)
         user.setUser({})
+        localStorage.clear()
+        navigate(LOGIN_ROUTE)
     }
     
     return (
@@ -43,10 +45,10 @@ const NavBar = observer ( () => {
                             <Menu.Item key="newticket" icon={<PlusCircleOutlined /> } onClick={()=> navigate(CREATE_ROUTE)}>
                                 Создать заявку
                             </Menu.Item>
-                            <Menu.Item key='search' className='rightMenu'>
+                            {/* <Menu.Item key='search' className='rightMenu'>
                                 <HeaderSearch/>
-                            </Menu.Item> 
-                            <Menu.Item key="user" icon={<Avatar icon={<UserOutlined />} />} onClick={showSidebar}>
+                            </Menu.Item>  */}
+                            <Menu.Item  className='rightMenu'key="user" icon={<Avatar icon={<UserOutlined />} />} onClick={showSidebar}>
                                 {user.user?.userInfo?.name || user.user.email }
                             </Menu.Item>
                         </Menu>

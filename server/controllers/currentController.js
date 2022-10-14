@@ -1,4 +1,4 @@
-const { CurrentTicket, Ticket, Category, Status, User } = require("../models/models")
+const { CurrentTicket, Ticket, Category, Status, User, Current } = require("../models/models")
 const ApiError = require('../error/ApiError')
 const closedId = process.env.CLOSED_ID
 const { Op } = require('sequelize')
@@ -12,9 +12,34 @@ class CurrentController {
             let offset = page * limit - limit
             
             console.log(userId)
+            const user = await User.findOne({where: {id: userId}})
+            const userCurrent = await Current.findOne({where: {userId: user.id}})
+
+            if (user.role === 'USER') {
+                const current = await CurrentTicket.findAll( 
+                    {
+                        where: {currentId: userCurrent.id}, 
+                        attributes: ['role'],
+                        include: [ 
+                            {
+                                model: Ticket, 
+                                attributes: ['id', 'title', 'createdAt', 'chatId', 'userId', 'isPriority',],
+                                include: [
+                                    {model: Category, attributes: ['id','name']}, 
+                                    {model: Status, attributes: ['id', 'name', 'tag']},
+                                    {model: User, attributes: ['email']}
+                                ],
+                            },
+    
+                        ],
+                    })
+    
+                return res.json(current)
+            }
+
             const current = await CurrentTicket.findAll( 
                 {
-                    where: {currentId: userId}, 
+                    where: {currentId: userCurrent.id}, 
                     attributes: ['role'],
                     include: [ 
                         {

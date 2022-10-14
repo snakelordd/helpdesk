@@ -3,7 +3,7 @@ import { Button, Card, Input, Avatar, Form, Space } from 'antd';
 import "../styles/Auth.css";
 import { UserOutlined, SettingOutlined} from '@ant-design/icons';
 import { NavLink, useNavigate } from "react-router-dom";
-import { HOME_ROUTE, CURRENT_ROUTE, TICKETS_ROUTE } from '../utils/consts';
+import { HOME_ROUTE, CURRENT_ROUTE, TICKETS_ROUTE, PROFILE_ROUTE } from '../utils/consts';
 import { Context } from "..";
 import { registration, login, fetchOneUser } from "../http/userAPI";
 import { observer } from "mobx-react-lite";
@@ -24,15 +24,17 @@ const Auth = () => {
             try {
                 let userData;
                 if (formDisplay === 'login') {
-                    userData = await login(email, password)
+                    userData = await login(email.toLowerCase(), password)
                 }
                 else {
                     userData = await registration(email, password)    
                 }
-                fetchOneUser(userData.id).then(data => {user.setUser(data)} )
+                fetchOneUser(userData.id).then(data => {
+                    user.setUser(data)
+                    user.setIsAuth(true)
+                    navigate(CURRENT_ROUTE)
+                } )
                 
-                user.setIsAuth(true)
-                navigate(TICKETS_ROUTE)
             }
             catch (e) {
                 console.log(e.response)
@@ -122,21 +124,21 @@ const Auth = () => {
             >
               <Card.Meta
                 avatar={<Avatar icon={<UserOutlined/>} />}
-                title={formDisplay === 'login' ? 'Авторизация' : 'Регистрация'}
-                description={
-                        formDisplay === 'login' ?
-                        <div>
-                            <span>Функционал данного сервиса требует авторизацию. </span>
-                            <p>Войдите или пройдите 
-                                <a onClick={() => setFormDisplay('register') }> регистрацию</a>
-                            </p>
-                        </div>
-                        :
-                        <div>
-                            <span> <a onClick={() => setFormDisplay('login') }> Войдите,</a> если у вас уже есть аккаунт. </span>
-                        </div>
-                    
-                }
+                title={ 'Авторизация' }
+                 description={
+                        //  formDisplay === 'login' ?
+                         <div>
+                             <span>Функционал данного сервиса требует авторизацию. </span>
+                             {/* <p>Войдите или пройдите 
+                                 <a onClick={() => setFormDisplay('register') }> регистрацию</a>
+                             </p> */}
+                         </div>
+                         
+                        //  <div>
+                        //      <span> <a onClick={() => setFormDisplay('login') }> Войдите,</a> если у вас уже есть аккаунт. </span>
+                        //  </div>
+
+                 }
               />
               { loginForm(formDisplay)}
             </Card>

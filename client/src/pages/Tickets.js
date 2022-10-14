@@ -77,6 +77,7 @@ const Tickets = observer ( () => {
     }
     const setMyCurrent = (ticket) => {
         tickets.setSelectedTicket(ticket)
+        console.log()
     }
 
     const onHide = () => {
@@ -99,7 +100,7 @@ const Tickets = observer ( () => {
             <div className='pageWidth ' style={{ marginTop: '1%'}}>
             
             <PageHeader  
-                key='pageHeader'
+              key='pageHeader'
               ghost={false}
               onBack={() => navigate(HOME_ROUTE)}
               title={title}
@@ -115,6 +116,9 @@ const Tickets = observer ( () => {
             </PageHeader>
             <div className='pageWidth ' style={{ marginTop: '1%'}}>
                 <Table
+                    loading={
+                        allTickets ? false : true
+                    }
                     dataSource={allTickets} 
                     sortDirections= {['ascend', 'descend', 'ascend']} 
                     key={Math.random()}

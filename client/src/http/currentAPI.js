@@ -6,6 +6,7 @@ export const setCurrent = async (formData) => {
 }
 
 export const fetchCurrent = async (userId) => {
+    console.log(userId)
     const {data}  = await $authHost.get('api/current/', { params: { userId: userId }})
     return data
 }

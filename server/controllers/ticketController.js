@@ -5,6 +5,7 @@ const path = require('path')
 const { Op } = require('sequelize')
 const sequelize = require('sequelize')
 const closedId = process.env.CLOSED_ID
+const openId = process.env.OPEN_ID
 
 class TicketController {
     async create(req, res, next) {
@@ -189,6 +190,16 @@ class TicketController {
             }
 
             if (statusId)   { 
+                const userCurrent = await Current.findOne({where: {userId}})
+                const current = await CurrentTicket.findOne({where: {ticketId, currentId: userCurrent.id, role: 'HOLDER'}})
+
+                if (!current) {
+                    await CurrentTicket.create({
+                        role: 'HOLDER',
+                        ticketId,
+                        currentId: userId
+                    })
+                }
                 await Message.create( {
                     body: 'Статус заявки изменен',
                     isLog: true,

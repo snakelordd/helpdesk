@@ -13,6 +13,7 @@ import { MANUAL_ROUTE, CLOSED_TICKETS_ROUTE ,REGISTRATION_ROUTE, SETTINGS_ROUTE,
 import Profile from './pages/Profile/Profile'
 
 export const authRoutes = [
+    
     {
         path: TICKETS_ROUTE,
         Component: <Tickets />
@@ -33,10 +34,7 @@ export const authRoutes = [
         path: SETTINGS_ROUTE,
         Component: <Settings />
     },
-    {
-        path: CURRENT_ROUTE,
-        Component: <Current />
-    },
+    
     {
         path: CURRENT_ROUTE + '/:ticketId',
         Component: <Current />

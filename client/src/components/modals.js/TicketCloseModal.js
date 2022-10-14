@@ -2,11 +2,13 @@ import React, { useContext, useState } from 'react';
 import { Modal, Button, Form, Input, Space, Select } from 'antd';
 import { Context } from '../..';
 import { updateTicket } from '../../http/ticketAPI';
+import { useNavigate } from 'react-router-dom';
+import { CURRENT_ROUTE } from '../../utils/consts';
 
 
 const TicketCloseModal = ({show, onHide}) => {
   const {user} = useContext(Context)
-
+  const navigate = useNavigate()
   const {tickets, ticketProps} = useContext(Context)
 
   const updateHandler = values => {
@@ -34,9 +36,7 @@ const TicketCloseModal = ({show, onHide}) => {
         <h2>Заявка {tickets.selectedTicket ? tickets.selectedTicket.id : 0}</h2>
         <Form id='close' onFinish={updateHandler} style={{display: 'flex',  marginTop: '20px' }}>  
             <Form.Item name={'status'} help='Выберите статус заявки' style={{width: '25%',}}>
-                
-                    <Select
-                        
+                    <Select   
                         showSearch
                         allowClear = 'true'
                         placeholder="Статус"
@@ -52,10 +52,6 @@ const TicketCloseModal = ({show, onHide}) => {
                         <Select.Option value={item.id} key={item.id}>{item.name}</Select.Option>
                     )}
                     </Select>  
-                    
-                    
-                
-                
             </Form.Item>
             <Form.Item name={ 'body'} help='Необязательно' style={{width: '76%', marginLeft: '1%'}}>
                 <Input placeholder='Комментарий'/>

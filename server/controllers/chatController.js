@@ -27,6 +27,17 @@ class chatController {
             else attachment = {id: null}
             let msg = null;
             body ? msg = body : msg
+
+            const ticket = await Ticket.findOne({where: {chatId}})
+            const user = await User.findOne({where: {id: userId}})
+
+            if (ticket.statusId === 1) {
+                await Ticket.update({statusId: 3}, {where: {id: ticket.id} })
+            }
+            if (ticket.statusId === 2) {
+                await Ticket.update({statusId: 1}, {where: {id: ticket.id} })
+            }
+            
             let message = await Message.create(
                 {
                     body: msg,
@@ -36,7 +47,7 @@ class chatController {
                     attachmentId: attachment.id
                 }
             ) 
-          return res.json(message)
+            return res.json(message)
          }
          catch (e) {
              next(ApiError.internal(e.message))

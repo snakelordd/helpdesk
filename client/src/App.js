@@ -13,21 +13,27 @@ import jwtDecode from 'jwt-decode';
 const App = () => {
   const {user} = useContext(Context)
   const [loading, setLoading] = useState(true)
-  
+  console.log('appjs', user)
   // localStorage.clear()
   useEffect( () => {
       check().then( data => {
-        if (localStorage.token === data.token) {
-            fetchOneUser(data.user.id).then(data => {user.setUser(data)} )
-            // user.setUser(data.user)
-            
+        if (data.token === localStorage.token) {
+          if (user.user) {
+            user.setIsAuth(true)
+          } 
+          else {
+            fetchOneUser(data.user.id).then(data => {
+              user.setUser(data)
+              user.setIsAuth(true)
+            } )
+          }
         }
         else {
           localStorage.removeItem('token')
         }
       }).finally( ()=> {
           setLoading(false)
-          user.setIsAuth(true)
+          
       })
     
 
@@ -42,8 +48,6 @@ const App = () => {
   }
   return (
     <BrowserRouter>
-    
-        {user.isAuth && <NavBar style={{position: 'relative'}}/>}
         <AppRouter />        
     </BrowserRouter>
   );

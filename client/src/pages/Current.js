@@ -1,54 +1,66 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../styles/styles.css'
-import { Table, Tag, Space, PageHeader, Divider, Input, DatePicker } from 'antd';
+import { Table, Tag, Space, PageHeader, Input} from 'antd';
 import { Context } from '..';
 import { useNavigate } from 'react-router-dom';
 import {HOME_ROUTE, TICKETS_ROUTE } from '../utils/consts';
 import { observer } from 'mobx-react-lite';
-import { getFormatDate, getStatusTag, getPriorityIcon } from './CommonFunctions';
-import {locale} from '../utils/locale'
-import SetCurrentModal from '../components/modals.js/SetCurrentModal';
-import { fetchTickets } from '../http/ticketAPI';
+import { getFormatDate, getPriorityIcon } from './CommonFunctions';
 import { fetchProps } from '../http/ticketPropsAPI';
 import { fetchCurrent } from '../http/currentAPI';
 
 
-const { Column, ColumnGroup } = Table;
-
+const { Column} = Table;
+const { Search } = Input;
 
 const Current = () => {
+
     const {tickets, ticketProps, user} = useContext(Context)
-    
     const [myCurrent, setMyCurrent] = useState()
+    const [updater, setUpdater] = useState(false)
 
     useEffect( () => {
+        try {
         fetchCurrent(user.user.id).then( data => {
             setMyCurrent(data) 
         })
+        }
+        catch (e) {
+            console.log('error')
+        }
     
     fetchProps('category').then( data => ticketProps.setCategories(data.data))
     fetchProps('status').then( data => ticketProps.setStatuses(data.data))
-    }, [user])
+    }, [updater])
 
     const navigate = useNavigate()
 
     tickets.tickets.map(i => i['key'] = i.id)
 
-    const { RangePicker } = DatePicker;
+    const onSearch = value => {
+        console.log(myCurrent)
+        let foundTickets = []
+        const ticketsList = myCurrent
 
-    const { Search } = Input;
-    const onSearch = value => console.log(value);
+        if(!value) {
+            setUpdater(!updater)
+        }
+
+        foundTickets = (ticketsList.filter( ticket => {
+        return (
+            ticket.ticket.id.toString().toLowerCase().includes(value) ||
+            ticket.ticket.category.name.toLowerCase().includes(value) ||
+            ticket.ticket.status.name.toLowerCase().includes(value) ||
+            ticket.ticket.title.toLowerCase().includes(value) ||
+            ticket.ticket.user.email.toLowerCase().includes(value) ||
+            ticket.ticket.title.toLowerCase().includes(value)
+          )
+        }))
+        setMyCurrent(foundTickets)
+        foundTickets=[]
+    };
     
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    
-    const setCurrent = (ticket) => {
-        tickets.setSelectedTicket(ticket)
-        setIsModalVisible(true)
-    }
-
-
     return ( 
-
         <div className='pageprops'>
             <div className='pageWidth' style={{ marginTop: '1%'}}>
             
@@ -58,9 +70,7 @@ const Current = () => {
               title="Мои заявки"
               extra={[
                 <Space size={12}>
-                
-                    <Search placeholder="Поиск" allowClear onSearch={onSearch} style={{ width: 200 }} />
-                    <RangePicker allowClear locale={locale} onChange={() => console.log('selected date')}/>
+                    <Search placeholder="Поиск" allowClear onChange={e => onSearch(e.target.value)} onSearch={onSearch} style={{ width: 200 }} />
                 </Space>
               ]}
             >
@@ -70,12 +80,13 @@ const Current = () => {
                 <Table 
                     dataSource={myCurrent} 
                     sortDirections= {['ascend', 'descend', 'ascend']} 
-                    
+                    loading={
+                        myCurrent ? false : true
+                    }
                 >
                     <Column 
                         title="Номер заявки" 
                         dataIndex="id" 
-                        
                         render={ (text, record) => (<a onClick={ ()=> { navigate(TICKETS_ROUTE + '/' + record.ticket.id)}} >{record.ticket.id}</a>)}
                     />
                     <Column 
@@ -100,28 +111,14 @@ const Current = () => {
                     <Column 
                         title="Статус" 
                         render={ (text, record) => <Tag color={record.ticket.status.tag}>{text.ticket.status.name}</Tag>}
-                            // getStatusTag(record)}
                         sorter = {(a, b) => a.ticket.status.id - b.ticket.status.id}
                     />
-
-                    {/* <Column
-                      title="Action"
-                      key="action"
-                      render={(text, record) => (
-                        <Space size="middle">
-                            <a onClick={ () => setCurrent(text)}>Назначить</a>
-                          
-                        </Space>
-                      )}
-                    /> */}
                     <Column 
                         title="Приоритет" 
-                        // dataIndex="priority" 
                         render ={ (record) => getPriorityIcon(record.ticket)}
                         sorter = {(a, b) => a.ticket.isPriority - b.isPriority}
                     />
                 </Table>
-                <SetCurrentModal show={isModalVisible} onHide={ () => setIsModalVisible(false)} />
             </div>
             </div>
             
